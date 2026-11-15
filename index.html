@@ -4,78 +4,217 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Gram Yuva Shakti – Enterprise Readiness Assessment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Mukta:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  body { font-family: Arial, Helvetica, sans-serif; background: #f4f4f4; margin: 0; padding: 16px; color: #222; }
-  .container { max-width: 760px; margin: 0 auto; background: #fff; padding: 20px 24px; border: 1px solid #ddd; border-radius: 6px; }
-  h1 { font-size: 20px; margin: 0 0 4px; }
-  .sub { color: #555; font-size: 14px; margin: 0 0 16px; }
-  h2 { font-size: 17px; background: #eef3f8; padding: 8px 10px; margin: 28px 0 12px; border-left: 4px solid #2a5d8f; }
-  .note { font-size: 14px; color: #444; margin: -4px 0 12px; }
-  .q { margin: 0 0 18px; }
-  .ql { display: block; font-weight: bold; margin-bottom: 6px; }
-  .hint { font-size: 13px; color: #666; margin: -2px 0 6px; }
-  .req { color: #c00; }
-  .opt { display: block; margin: 4px 0; font-weight: normal; cursor: pointer; }
-  .rating label { display: inline-block; margin-right: 16px; cursor: pointer; }
-  input[type=text], input[type=tel], input[type=email], input[type=number], textarea {
-    width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid #bbb; border-radius: 4px; font-size: 15px; font-family: inherit;
+  /* Greens from the NABARD logo – adjust here if needed */
+  :root {
+    --green: #0b6b3a;
+    --green-dark: #08502b;
+    --green-light: #6cb33f;
+    --green-tint: #eef6ef;
+    --ink: #1f2a24;
+    --muted: #5f6b64;
+    --line: #dfe5e1;
+    --bg: #f7f9f8;
+    --err: #b3261e;
   }
-  .err { color: #c00; font-size: 13px; margin-top: 4px; }
-  .q.invalid .ql { color: #c00; }
-  button { background: #2a5d8f; color: #fff; border: 0; padding: 12px 28px; font-size: 16px; border-radius: 4px; cursor: pointer; margin-top: 10px; }
-  button:disabled { background: #888; cursor: default; }
-  #status { margin-top: 14px; font-weight: bold; }
-  #thanks { display: none; text-align: center; padding: 30px 10px; }
+  * { box-sizing: border-box; }
+  html { scroll-padding-top: 24px; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font-family: "Mukta", "Noto Sans", Arial, sans-serif; font-size: 16px; line-height: 1.55;
+  }
+
+  .progress { position: fixed; top: 0; left: 0; right: 0; height: 4px; background: var(--line); z-index: 20; }
+  .progress span { display: block; height: 100%; width: 0; background: var(--green-light); transition: width .3s ease; }
+
+  /* Header */
+  .hero { background: #fff; border-bottom: 3px solid var(--green); }
+  .hero-in { max-width: 720px; margin: 0 auto; padding: 28px 20px 24px; display: flex; gap: 18px; align-items: center; }
+  .logo-chip img { display: block; height: 64px; width: auto; max-width: 140px; object-fit: contain; }
+  .hero h1 { font-weight: 600; font-size: 26px; line-height: 1.2; margin: 0 0 2px; color: var(--green-dark); }
+  .hero .campaign { margin: 0 0 6px; font-size: 15px; color: var(--green); font-weight: 500; }
+  .hero .intro { margin: 0; font-size: 15px; color: var(--muted); max-width: 56ch; }
+
+  main { max-width: 720px; margin: 0 auto; padding: 28px 20px 40px; }
+
+  /* Sections */
+  .sec { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 22px 22px 8px; margin-bottom: 18px; }
+  .sec-head { display: flex; align-items: center; gap: 12px; }
+  .step {
+    width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; display: grid; place-items: center;
+    background: var(--green-tint); color: var(--green); font-weight: 600; font-size: 15px;
+    transition: background .2s, color .2s;
+  }
+  .sec.done .step { background: var(--green); color: #fff; }
+  .sec h2 { font-weight: 600; font-size: 20px; margin: 0; color: var(--green-dark); }
+  .sec .note { margin: 6px 0 0; color: var(--muted); font-size: 15px; }
+
+  /* Questions */
+  .q { padding: 18px 0; border-bottom: 1px solid var(--line); }
+  .q:last-child { border-bottom: 0; }
+  .ql { display: block; font-weight: 500; font-size: 16.5px; margin-bottom: 10px; line-height: 1.45; }
+  .ql .n { color: var(--green); margin-right: 6px; font-weight: 600; }
+  .req { color: var(--err); }
+  .hint { font-size: 14px; color: var(--muted); margin: -6px 0 10px; }
+
+  /* Options */
+  .opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; }
+  .opt {
+    display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: #fff;
+    border: 1px solid var(--line); border-radius: 8px; cursor: pointer; font-size: 15.5px; line-height: 1.3;
+    transition: border-color .15s, background .15s;
+  }
+  .opt:hover { border-color: #b9c6bf; }
+  .opt input { accent-color: var(--green); width: 18px; height: 18px; margin: 0; flex-shrink: 0; cursor: pointer; }
+  .opt:has(input:checked) { border-color: var(--green); background: var(--green-tint); }
+  .opt:has(input:focus-visible) { outline: 2px solid var(--green); outline-offset: 2px; }
+
+  /* Rating */
+  .rating { display: grid; grid-template-columns: repeat(5, 1fr); max-width: 340px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #fff; }
+  .rating label { position: relative; }
+  .rating input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+  .rating span {
+    display: block; text-align: center; padding: 9px 0; cursor: pointer; color: var(--muted);
+    font-weight: 600; border-left: 1px solid var(--line); transition: background .15s, color .15s;
+  }
+  .rating label:first-child span { border-left: 0; }
+  .rating label:hover span { background: var(--green-tint); }
+  .rating input:checked + span { background: var(--green); color: #fff; }
+  .rating input:focus-visible + span { outline: 2px solid var(--green-dark); outline-offset: -2px; }
+  .scale { display: flex; justify-content: space-between; max-width: 340px; font-size: 13px; color: var(--muted); margin-top: 4px; }
+
+  /* Text fields */
+  input[type=text], input[type=tel], input[type=email], input[type=number], textarea {
+    width: 100%; padding: 10px 12px; font: inherit; font-size: 16px; color: var(--ink); background: #fff;
+    border: 1px solid var(--line); border-radius: 8px; transition: border-color .15s, box-shadow .15s;
+  }
+  textarea { resize: vertical; min-height: 88px; }
+  input:focus, textarea:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(11,107,58,.15); }
+  .other { margin-top: 8px; }
+
+  /* Errors */
+  .err { color: var(--err); font-size: 14px; margin-top: 6px; }
+  .err:empty { display: none; }
+  .q.invalid .ql { color: var(--err); }
+  .q.invalid input[type=text], .q.invalid input[type=tel], .q.invalid input[type=email],
+  .q.invalid input[type=number], .q.invalid textarea, .q.invalid .rating { border-color: var(--err); }
+
+  /* Submit */
+  .submit {
+    width: 100%; border: 0; border-radius: 8px; padding: 14px 20px; cursor: pointer;
+    background: var(--green); color: #fff; font: inherit; font-weight: 600; font-size: 18px;
+    transition: background .15s;
+  }
+  .submit:hover { background: var(--green-dark); }
+  .submit:focus-visible { outline: 2px solid var(--green-dark); outline-offset: 3px; }
+  .submit:disabled { background: #a9b5ae; cursor: default; }
+  #status { margin-top: 12px; text-align: center; color: var(--muted); }
+  #status.bad { color: var(--err); }
+  .count { text-align: center; color: var(--muted); font-size: 14px; margin: 4px 0 10px; }
+
+  /* Thank you */
+  #thanks { display: none; text-align: center; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 40px 24px; }
+  .tick {
+    width: 64px; height: 64px; border-radius: 50%; margin: 0 auto 14px; background: var(--green-tint); color: var(--green);
+    display: grid; place-items: center; font-size: 32px; line-height: 1;
+  }
+  #thanks h2 { font-weight: 600; font-size: 24px; margin: 0 0 6px; color: var(--green-dark); }
+  #thanks p { color: var(--muted); margin: 0 auto 6px; max-width: 46ch; }
+  .rid {
+    display: inline-block; margin: 10px 0 12px; padding: 8px 16px; border-radius: 8px;
+    background: var(--green-tint); font-weight: 600; font-size: 18px; color: var(--green-dark);
+  }
+
+  footer { text-align: center; font-size: 13px; color: var(--muted); padding: 0 20px 28px; }
+
+  @media (max-width: 560px) {
+    .hero-in { padding: 20px 16px 18px; gap: 12px; flex-direction: column; align-items: flex-start; }
+    .logo-chip img { height: 48px; }
+    .hero h1 { font-size: 21px; }
+    main { padding: 20px 12px 32px; }
+    .sec { padding: 18px 16px 6px; }
+    .opts { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { transition: none !important; }
+  }
 </style>
 </head>
 <body>
-<div class="container">
-  <h1>Nationwide Gram Yuva Shakti Campaign</h1>
-  <p class="sub">Annexure III – Enterprise Readiness Assessment Form &nbsp;|&nbsp; <span class="req">*</span> Required</p>
+<div class="progress" aria-hidden="true"><span id="bar"></span></div>
 
+<header class="hero">
+  <div class="hero-in">
+    <div class="logo-chip">
+      <img src="fd674d5c-6ce0-4729-8a51-534cf335e765.jpeg" alt="NABARD"
+           onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/NABARD296/GYS/main/fd674d5c-6ce0-4729-8a51-534cf335e765.jpeg';">
+    </div>
+    <div>
+      <h1>Enterprise Readiness Assessment</h1>
+      <p class="campaign">Nationwide Gram Yuva Shakti Campaign – Annexure III</p>
+      <p class="intro">Takes about 10 minutes. Answer honestly, so mentors can match the right training, credit and support to you.</p>
+    </div>
+  </div>
+</header>
+
+<main>
   <form id="form" novalidate>
-    <button type="submit" id="submitBtn">Submit</button>
-    <div id="status"></div>
+    <div id="sections"></div>
+    <div>
+      <p class="count" id="count"></p>
+      <button type="submit" class="submit" id="submitBtn">Submit assessment</button>
+      <div id="status" role="status" aria-live="polite"></div>
+    </div>
   </form>
 
-  <div id="thanks">
-    <h2 style="border:0;background:none;">Thank you!</h2>
-    <p>Your response has been recorded.</p>
-    <p id="respId"></p>
+  <div id="thanks" role="status" aria-live="polite">
+    <div class="tick" aria-hidden="true">✓</div>
+    <h2>Assessment submitted</h2>
+    <p>Your answers have been recorded. A GYS mentor or partner may contact you about next steps.</p>
+    <div class="rid" id="respId"></div>
+    <p>Keep this response ID for any follow-up.</p>
   </div>
-</div>
+</main>
+
+<footer>Nationwide Gram Yuva Shakti Campaign</footer>
 
 <script>
 /* =========================================================
-   1. CONFIG – paste your Apps Script Web App URL here
+   1. CONFIG – Apps Script Web App URL
    ========================================================= */
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzDF71MA9mciiOhFJkTwX-2zeTm9GXhERFDLNpr3YcecSdU9JRRlWSUp0Ge2iXSOrL_2Q/exec";
 
 /* =========================================================
-   2. QUESTIONS (Annexure III, verbatim)
-   Fields numbered with a letter (19a, 34a–34c, 46) are not in
-   the Annexure but are needed by the marking template.
+   2. QUESTIONS (Annexure III wording)
+   Fields numbered with a letter (1a, 1b, 19a, 34a–34c, 46) are not in
+   the Annexure but are needed for the application or marking template.
+   Any option named "Other" shows a box to type the answer.
    ========================================================= */
 const YN = ["Yes", "No"];
 const YNP = ["Yes", "No", "Partially"];
 
 const FORM = [
-  { section: "Section 1: Basic Information" },
-  { id: "q1",  n: "1",  label: "Full Name", type: "text", req: true },
-  { id: "q2",  n: "2",  label: "Gender", type: "radio", opts: ["Male", "Female", "Other"], req: true },
-  { id: "q3",  n: "3",  label: "Age", type: "radio", opts: ["18-21", "22-25", "26-30"], req: true },
-  { id: "q4",  n: "4",  label: "Mobile Number", type: "tel", req: true, attrs: 'maxlength="10" inputmode="numeric"' },
-  { id: "q5",  n: "5",  label: "Email ID (Optional)", type: "email" },
+  { section: "Basic Information" },
+  { id: "q1",  n: "1",  label: "Full Name", type: "text", req: true, attrs: 'autocomplete="name"' },
+  { id: "q1a", n: "1a", label: "Father's Full Name", type: "text", req: true },
+  { id: "q1b", n: "1b", label: "Mother's Full Name", type: "text", req: true },
+  { id: "q2",  n: "2",  label: "Gender", type: "radio", opts: ["Female", "Male", "Other"], req: true },
+  { id: "q3",  n: "3",  label: "Age", type: "radio", opts: ["18-21", "22-25", "26-30", "Above 30"], req: true },
+  { id: "q4",  n: "4",  label: "Mobile Number", type: "tel", req: true, attrs: 'maxlength="10" inputmode="numeric" autocomplete="tel-national"' },
+  { id: "q5",  n: "5",  label: "Email ID", type: "email", req: true, attrs: 'autocomplete="email"' },
   { id: "q6",  n: "6",  label: "State", type: "text", req: true },
   { id: "q7",  n: "7",  label: "District", type: "text", req: true },
   { id: "q8",  n: "8",  label: "Block/Taluka", type: "text", req: true },
   { id: "q9",  n: "9",  label: "Village", type: "text", req: true },
   { id: "q10", n: "10", label: "Educational Qualification", type: "radio", req: true,
-    opts: ["< Class X", "Class X", "Class XII", "ITI/Polytechnic", "Graduate", "Post-graduate", "Professional Qualification"] },
+    opts: ["< Class X", "Class X", "Class XII", "ITI/Polytechnic", "Graduate", "Post-graduate", "Professional Qualification", "Other"] },
   { id: "q11", n: "11", label: "Occupation", type: "radio", req: true,
     opts: ["Student", "Farmer", "Self-employed", "Wage Labour", "Salaried Employment", "Unemployed", "Other"] },
 
-  { section: "Section 2: Enterprise Aspiration" },
+  { section: "Enterprise Aspiration" },
   { id: "q12", n: "12", label: "Do you wish to start or expand your own enterprise within the next 2 years?", type: "radio", req: true,
     opts: ["Yes", "No", "Not Sure"] },
   { id: "q13", n: "13", label: "Which sector interests you most?", type: "radio", req: true,
@@ -87,7 +226,7 @@ const FORM = [
   { id: "q16", n: "16", label: "Why do you want to become an entrepreneur?", type: "checkbox", req: true,
     opts: ["Employment Generation", "Increase Income", "Family Business Expansion", "Local Problem Solving", "Passion/Interest", "Other"] },
 
-  { section: "Section 3: Existing Experience" },
+  { section: "Existing Experience" },
   { id: "q17", n: "17", label: "Have you ever run a business or income-generating activity?", type: "radio", opts: YN, req: true },
   { id: "q18", n: "18", label: "If Yes, for how long?", type: "radio", req: true, showIf: { q: "q17", v: "Yes" },
     opts: ["Less than 1 year", "1-3 years", "More than 3 years"] },
@@ -98,7 +237,7 @@ const FORM = [
   { id: "q21", n: "21", label: "If Yes, training area", type: "checkbox", req: true, showIf: { q: "q20", v: "Yes" },
     opts: ["Technical Skill", "Agriculture", "Computer/Digital", "Food Processing", "Marketing", "Financial Management", "Other"] },
 
-  { section: "Section 4: Entrepreneurial Competencies", note: "Rate yourself on a scale of 1-5 (1 = Very Low, 5 = Very High)" },
+  { section: "Entrepreneurial Competencies", note: "Rate yourself on a scale of 1-5 (1 = Very Low, 5 = Very High)" },
   { id: "q22", n: "22", label: "I am willing to take calculated risks.", type: "rating", req: true },
   { id: "q23", n: "23", label: "I can identify business opportunities around me.", type: "rating", req: true },
   { id: "q24", n: "24", label: "I can persuade people and build networks.", type: "rating", req: true },
@@ -108,7 +247,7 @@ const FORM = [
   { id: "q28", n: "28", label: "I can lead a team or manage workers.", type: "rating", req: true },
   { id: "q29", n: "29", label: "I am comfortable using mobile apps and digital platforms.", type: "rating", req: true },
 
-  { section: "Section 5: Resource Readiness" },
+  { section: "Resource Readiness" },
   { id: "q30", n: "30", label: "Do you have access to land, workspace or infrastructure required for business?", type: "radio", opts: YNP, req: true },
   { id: "q31", n: "31", label: "Do you have family support for starting a business?", type: "radio", opts: YNP, req: true },
   { id: "q32", n: "32", label: "Do you have personal savings that can be invested?", type: "radio", opts: YN, req: true },
@@ -116,12 +255,12 @@ const FORM = [
     opts: ["Below ₹25,000", "₹25,000-₹1 lakh", "₹1-5 lakh", "More than ₹5 lakh"] },
   { id: "q34", n: "34", label: "Are you aware of bank loans and government schemes for enterprises?", type: "radio", opts: YN, req: true },
   { id: "q34a", n: "34a", label: "CKYC Number (if available)", hint: "14 digits", type: "text", attrs: 'maxlength="14" inputmode="numeric"' },
-  { id: "q34b", n: "34b", label: "Aadhaar Number (if available)", hint: "Only checked for validity; only the last 4 digits are stored.", type: "text",
+  { id: "q34b", n: "34b", label: "Aadhaar Number", hint: "Only checked for validity; only the last 4 digits are stored.", type: "text", req: true,
     attrs: 'maxlength="14" inputmode="numeric" autocomplete="off"' },
   { id: "q34c", n: "34c", label: "CIBIL Score (if known)", hint: "Between 300 and 900", type: "number", attrs: 'min="300" max="900" inputmode="numeric"' },
   { id: "q35", n: "35", label: "Have you ever availed a bank loan?", type: "radio", opts: YN, req: true },
 
-  { section: "Section 6: Market & Digital Orientation" },
+  { section: "Market & Digital Orientation" },
   { id: "q36", n: "36", label: "Have you ever sold any product/service in the market?", type: "radio", opts: YN, req: true },
   { id: "q37", n: "37", label: "Do you use smartphones regularly?", type: "radio", opts: YN, req: true },
   { id: "q38", n: "38", label: "Are you comfortable with:", type: "checkbox", req: true,
@@ -129,10 +268,10 @@ const FORM = [
   { id: "q39", n: "39", label: "Do you use WhatsApp for business communication?", type: "radio", opts: YN, req: true },
   { id: "q40", n: "40", label: "Do you believe there is a market demand for your business idea?", type: "radio", opts: ["Yes", "No", "Not Sure"], req: true },
 
-  { section: "Section 7: Support Required" },
+  { section: "Support Required" },
   { id: "q41", n: "41", label: "What support do you need most? (Select up to 3)", type: "checkbox", req: true, max: 3,
     opts: ["Business Idea Development", "Skill Training", "Business Plan Preparation", "Bank Credit", "Government Schemes",
-           "Market Linkage", "Digital Marketing", "Mentorship", "Technology Support", "Registration & Compliance"] },
+           "Market Linkage", "Digital Marketing", "Mentorship", "Technology Support", "Registration & Compliance", "Other"] },
   { id: "q42", n: "42", label: "Are you willing to participate in mentoring and incubation programmes?", type: "radio", opts: YN, req: true },
   { id: "q43", n: "43", label: "Are you willing to attend entrepreneurship training programmes?", type: "radio", opts: YN, req: true },
   { id: "q44", n: "44", label: "Are you willing to be contacted by GYS mentors and partners?", type: "radio", opts: YN, req: true },
@@ -144,6 +283,8 @@ const FORM = [
     type: "radio", opts: ["Yes, I agree"], req: true }
 ];
 
+const QUESTIONS = FORM.filter(q => !q.section);
+
 /* =========================================================
    3. RENDER
    ========================================================= */
@@ -152,55 +293,102 @@ function esc(s) {
 }
 
 function render() {
-  let html = "";
+  let html = "", sec = 0, open = false;
   FORM.forEach(q => {
     if (q.section) {
-      html += `<h2>${esc(q.section)}</h2>`;
-      if (q.note) html += `<p class="note">${esc(q.note)}</p>`;
+      if (open) html += `</section>`;
+      sec++;
+      open = true;
+      html += `<section class="sec" id="sec_${sec}"><div class="sec-head"><div class="step" aria-hidden="true">${sec}</div>` +
+              `<h2>${esc(q.section)}</h2></div>` + (q.note ? `<p class="note">${esc(q.note)}</p>` : "");
       return;
     }
+    q.sec = sec;
     html += `<div class="q" id="wrap_${q.id}"${q.showIf ? " hidden" : ""}>`;
-    html += `<span class="ql">${esc(q.n)}. ${esc(q.label)}${q.req ? ' <span class="req">*</span>' : ""}</span>`;
+    html += `<span class="ql" id="lbl_${q.id}"><span class="n">${esc(q.n)}.</span>${esc(q.label)}${q.req ? ' <span class="req" aria-hidden="true">*</span>' : ""}</span>`;
     if (q.hint) html += `<div class="hint">${esc(q.hint)}</div>`;
     switch (q.type) {
       case "text": case "tel": case "email": case "number":
-        html += `<input type="${q.type}" name="${q.id}" ${q.attrs || ""}>`; break;
+        html += `<input type="${q.type}" name="${q.id}" aria-labelledby="lbl_${q.id}" ${q.attrs || ""}>`; break;
       case "textarea":
-        html += `<textarea name="${q.id}" rows="3" ${q.attrs || ""}></textarea>`; break;
+        html += `<textarea name="${q.id}" rows="3" aria-labelledby="lbl_${q.id}" ${q.attrs || ""}></textarea>`; break;
       case "radio": case "checkbox":
-        q.opts.forEach(o => {
-          html += `<label class="opt"><input type="${q.type}" name="${q.id}" value="${esc(o)}"> ${esc(o)}</label>`;
-        }); break;
+        html += `<div class="opts" role="group" aria-labelledby="lbl_${q.id}">` +
+          q.opts.map(o => `<label class="opt"><input type="${q.type}" name="${q.id}" value="${esc(o)}"><span>${esc(o)}</span></label>`).join("") +
+          `</div>`;
+        if (q.opts.includes("Other")) {
+          html += `<input type="text" class="other" name="${q.id}_other" placeholder="Please specify" maxlength="100" aria-label="Please specify other" hidden>`;
+        }
+        break;
       case "rating":
-        html += `<div class="rating">` +
-          [1, 2, 3, 4, 5].map(v => `<label><input type="radio" name="${q.id}" value="${v}"> ${v}</label>`).join("") +
-          `</div>`; break;
+        html += `<div class="rating" role="radiogroup" aria-labelledby="lbl_${q.id}">` +
+          [1, 2, 3, 4, 5].map(v => `<label><input type="radio" name="${q.id}" value="${v}" aria-label="${v}"><span>${v}</span></label>`).join("") +
+          `</div><div class="scale"><span>Very Low</span><span>Very High</span></div>`;
+        break;
     }
     html += `<div class="err" id="err_${q.id}"></div></div>`;
   });
-  document.getElementById("form").insertAdjacentHTML("afterbegin", html);
+  if (open) html += `</section>`;
+  document.getElementById("sections").innerHTML = html;
 }
 
 /* =========================================================
    4. HELPERS
    ========================================================= */
+function otherBox(id) { return document.getElementsByName(id + "_other")[0]; }
+
+function otherChecked(id) {
+  return [...document.getElementsByName(id)].some(e => e.value === "Other" && e.checked);
+}
+
 function val(id) {
   const els = [...document.getElementsByName(id)];
   if (!els.length) return "";
   const t = els[0].type;
-  if (t === "radio") { const c = els.find(e => e.checked); return c ? c.value : ""; }
-  if (t === "checkbox") return els.filter(e => e.checked).map(e => e.value).join("; ");
+  const fix = v => {
+    const box = otherBox(id);
+    if (v === "Other" && box) {
+      const s = box.value.trim().replace(/;/g, ",");
+      return s ? "Other: " + s : "Other";
+    }
+    return v;
+  };
+  if (t === "radio") { const c = els.find(e => e.checked); return c ? fix(c.value) : ""; }
+  if (t === "checkbox") return els.filter(e => e.checked).map(e => fix(e.value)).join("; ");
   return els[0].value.trim();
 }
 
-function isVisible(id) {
-  return !document.getElementById("wrap_" + id).hidden;
+function isVisible(id) { return !document.getElementById("wrap_" + id).hidden; }
+
+function answered(q) {
+  if (!val(q.id)) return false;
+  const box = otherBox(q.id);
+  if (box && otherChecked(q.id) && !box.value.trim()) return false;
+  return true;
 }
 
 function updateVisibility() {
-  FORM.forEach(q => {
-    if (!q.showIf) return;
-    document.getElementById("wrap_" + q.id).hidden = val(q.showIf.q) !== q.showIf.v;
+  QUESTIONS.forEach(q => {
+    if (q.showIf) document.getElementById("wrap_" + q.id).hidden = val(q.showIf.q) !== q.showIf.v;
+    const box = otherBox(q.id);
+    if (box) box.hidden = !otherChecked(q.id);
+  });
+}
+
+function updateProgress() {
+  const req = QUESTIONS.filter(q => q.req && isVisible(q.id));
+  const done = req.filter(answered).length;
+  document.getElementById("bar").style.width = (req.length ? (done / req.length) * 100 : 0) + "%";
+  document.getElementById("count").textContent = done === req.length
+    ? "All required questions answered"
+    : `${done} of ${req.length} required questions answered`;
+  const secs = [...new Set(QUESTIONS.map(q => q.sec))];
+  secs.forEach(s => {
+    const list = req.filter(q => q.sec === s);
+    const el = document.getElementById("sec_" + s);
+    const complete = list.length > 0 && list.every(answered);
+    el.classList.toggle("done", complete);
+    el.querySelector(".step").textContent = complete ? "✓" : s;
   });
 }
 
@@ -220,21 +408,23 @@ function validAadhaar(num) {
    5. VALIDATION
    ========================================================= */
 function setErr(id, msg) {
-  document.getElementById("err_" + id).textContent = msg || "";
+  const e = document.getElementById("err_" + id);
+  if (!e) return;
+  e.textContent = msg || "";
   document.getElementById("wrap_" + id).classList.toggle("invalid", !!msg);
 }
 
 function validate() {
   let first = null;
-  FORM.forEach(q => {
-    if (q.section) return;
+  QUESTIONS.forEach(q => {
     let msg = "";
     const v = val(q.id);
     if (isVisible(q.id)) {
       if (q.req && !v) msg = "This question is required.";
+      else if (otherBox(q.id) && otherChecked(q.id) && !otherBox(q.id).value.trim()) msg = "Type your answer for “Other”.";
       else if (v) {
         if (q.id === "q4" && !/^[6-9]\d{9}$/.test(v)) msg = "Enter a valid 10-digit mobile number.";
-        if (q.id === "q5" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) msg = "Enter a valid email ID.";
+        if (q.id === "q5" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) msg = "Enter a valid email ID, for example name@gmail.com.";
         if (q.id === "q19a" && (isNaN(v) || +v < 0 || +v > 50)) msg = "Enter years between 0 and 50.";
         if (q.id === "q34a" && !/^\d{14}$/.test(v)) msg = "CKYC number must be 14 digits.";
         if (q.id === "q34b" && !validAadhaar(v.replace(/\s/g, ""))) msg = "Enter a valid 12-digit Aadhaar number.";
@@ -245,7 +435,7 @@ function validate() {
     if (msg && !first) first = q.id;
   });
   if (!first && val("q46") !== "Yes, I agree") {
-    setErr("q46", "Consent is required to submit this form.");
+    setErr("q46", "Tick the consent box to submit.");
     first = "q46";
   }
   if (first) document.getElementById("wrap_" + first).scrollIntoView({ behavior: "smooth", block: "center" });
@@ -257,10 +447,7 @@ function validate() {
    ========================================================= */
 function buildPayload() {
   const data = { submitted_at: new Date().toISOString() };
-  FORM.forEach(q => {
-    if (q.section) return;
-    data[q.id] = isVisible(q.id) ? val(q.id) : "";
-  });
+  QUESTIONS.forEach(q => { data[q.id] = isVisible(q.id) ? val(q.id) : ""; });
   // Never send the full Aadhaar number – send validity + last 4 digits only
   const a = data.q34b.replace(/\s/g, "");
   data.q34b = a ? "XXXX-XXXX-" + a.slice(-4) : "";
@@ -268,26 +455,26 @@ function buildPayload() {
   return data;
 }
 
+let currentSid = null;
+
 async function onSubmit(e) {
   e.preventDefault();
   const status = document.getElementById("status");
   const btn = document.getElementById("submitBtn");
-  status.textContent = "";
-  if (!validate()) { status.textContent = "Please correct the highlighted questions."; return; }
-  if (SCRIPT_URL.indexOf("https://script.google.com/") !== 0) {
-    status.textContent = "Form is not connected yet (SCRIPT_URL not set)."; return;
-  }
-  if (!/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec$/.test(SCRIPT_URL)) {
-    status.textContent = "Form is not connected correctly (SCRIPT_URL must end in /exec)."; return;
-  }
-  btn.disabled = true;
-  status.textContent = "Submitting… please wait.";
+  status.textContent = ""; status.className = "";
+  if (!validate()) { status.textContent = "Some answers need attention. They are marked in red above."; status.className = "bad"; return; }
 
-  // A reference ID made here, so the response can be identified even if
-  // the browser cannot read Google's reply. The server ignores repeats.
+  btn.disabled = true;
+  btn.textContent = "Submitting…";
+  status.textContent = "This can take up to 20 seconds. Please keep this page open.";
+
+  // Reference ID made here so a retry is never saved twice
+  if (!currentSid) {
+    currentSid = "GYS-" + Date.now().toString(36).toUpperCase() + "-" +
+                 Math.random().toString(36).slice(2, 6).toUpperCase();
+  }
   const payload = buildPayload();
-  payload.sid = "GYS-" + Date.now().toString(36).toUpperCase() + "-" +
-                Math.random().toString(36).slice(2, 6).toUpperCase();
+  payload.sid = currentSid;
   const opts = {
     method: "POST",
     headers: { "Content-Type": "text/plain;charset=utf-8" },
@@ -301,19 +488,21 @@ async function onSubmit(e) {
       out = await res.json().catch(() => ({}));
     } catch (readErr) {
       // Some browsers (e.g. Safari on iPhone) block reading Google's reply.
-      // Send again without reading the reply; the server skips duplicates.
+      // Send again without reading it; the server skips duplicates.
       await fetch(SCRIPT_URL, Object.assign({ mode: "no-cors" }, opts));
-      out = { status: "success", responseId: payload.sid };
+      out = { status: "success", responseId: currentSid };
     }
     if (out.status && out.status !== "success") throw new Error(out.message || "Server error");
-    if (!out.responseId) out.responseId = payload.sid;
+    document.getElementById("respId").textContent = out.responseId || currentSid;
     document.getElementById("form").style.display = "none";
     document.getElementById("thanks").style.display = "block";
-    if (out.responseId) document.getElementById("respId").textContent = "Response ID: " + out.responseId;
-    window.scrollTo(0, 0);
+    document.getElementById("bar").style.width = "100%";
+    window.scrollTo({ top: 0, behavior: "smooth" });
   } catch (err) {
-    status.textContent = "Submission failed: " + err.message + ". Please check your connection and try again.";
+    status.textContent = "Not submitted: " + err.message + ". Check your internet connection and press Submit assessment again.";
+    status.className = "bad";
     btn.disabled = false;
+    btn.textContent = "Submit assessment";
   }
 }
 
@@ -322,24 +511,31 @@ async function onSubmit(e) {
    ========================================================= */
 render();
 const form = document.getElementById("form");
+
 form.addEventListener("change", e => {
   const t = e.target;
+  const name = t.name.replace(/_other$/, "");
   // Q41: maximum 3 selections
   if (t.name === "q41" && t.checked && document.querySelectorAll('input[name="q41"]:checked').length > 3) {
     t.checked = false;
-    setErr("q41", "You can select up to 3 options.");
+    setErr("q41", "You can select up to 3 options. Untick one to choose another.");
     return;
   }
-  // Q38: "None of the above" is exclusive
+  // Q38: "None of the above" can't be combined with other options
   if (t.name === "q38" && t.checked) {
     document.querySelectorAll('input[name="q38"]').forEach(c => {
       if (c !== t && (t.value === "None of the above" || c.value === "None of the above")) c.checked = false;
     });
   }
-  if (t.name) setErr(t.name, "");
   updateVisibility();
+  // Move straight to the "Other" box when it is chosen
+  if (t.value === "Other" && t.checked && otherBox(t.name)) otherBox(t.name).focus();
+  if (name) setErr(name, "");
+  updateProgress();
 });
+form.addEventListener("input", updateProgress);
 form.addEventListener("submit", onSubmit);
+updateProgress();
 </script>
 </body>
 </html>
