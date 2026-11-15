@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gram Yuva Shakti – Enterprise Readiness Assessment</title>
+<style>
+  body { font-family: Arial, Helvetica, sans-serif; background: #f4f4f4; margin: 0; padding: 16px; color: #222; }
+  .container { max-width: 760px; margin: 0 auto; background: #fff; padding: 20px 24px; border: 1px solid #ddd; border-radius: 6px; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .sub { color: #555; font-size: 14px; margin: 0 0 16px; }
+  h2 { font-size: 17px; background: #eef3f8; padding: 8px 10px; margin: 28px 0 12px; border-left: 4px solid #2a5d8f; }
+  .note { font-size: 14px; color: #444; margin: -4px 0 12px; }
+  .q { margin: 0 0 18px; }
+  .ql { display: block; font-weight: bold; margin-bottom: 6px; }
+  .hint { font-size: 13px; color: #666; margin: -2px 0 6px; }
+  .req { color: #c00; }
+  .opt { display: block; margin: 4px 0; font-weight: normal; cursor: pointer; }
+  .rating label { display: inline-block; margin-right: 16px; cursor: pointer; }
+  input[type=text], input[type=tel], input[type=email], input[type=number], textarea {
+    width: 100%; box-sizing: border-box; padding: 8px; border: 1px solid #bbb; border-radius: 4px; font-size: 15px; font-family: inherit;
+  }
+  .err { color: #c00; font-size: 13px; margin-top: 4px; }
+  .q.invalid .ql { color: #c00; }
+  button { background: #2a5d8f; color: #fff; border: 0; padding: 12px 28px; font-size: 16px; border-radius: 4px; cursor: pointer; margin-top: 10px; }
+  button:disabled { background: #888; cursor: default; }
+  #status { margin-top: 14px; font-weight: bold; }
+  #thanks { display: none; text-align: center; padding: 30px 10px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <h1>Nationwide Gram Yuva Shakti Campaign</h1>
+  <p class="sub">Annexure III – Enterprise Readiness Assessment Form &nbsp;|&nbsp; <span class="req">*</span> Required</p>
+
+  <form id="form" novalidate>
+    <button type="submit" id="submitBtn">Submit</button>
+    <div id="status"></div>
+  </form>
+
+  <div id="thanks">
+    <h2 style="border:0;background:none;">Thank you!</h2>
+    <p>Your response has been recorded.</p>
+    <p id="respId"></p>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   1. CONFIG – paste your Apps Script Web App URL here
+   ========================================================= */
+const SCRIPT_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
+
+/* =========================================================
+   2. QUESTIONS (Annexure III, verbatim)
+   Fields numbered with a letter (19a, 34a–34c, 46) are not in
+   the Annexure but are needed by the marking template.
+   ========================================================= */
+const YN = ["Yes", "No"];
+const YNP = ["Yes", "No", "Partially"];
+
+const FORM = [
+  { section: "Section 1: Basic Information" },
+  { id: "q1",  n: "1",  label: "Full Name", type: "text", req: true },
+  { id: "q2",  n: "2",  label: "Gender", type: "radio", opts: ["Male", "Female", "Other"], req: true },
+  { id: "q3",  n: "3",  label: "Age", type: "radio", opts: ["18-21", "22-25", "26-30"], req: true },
+  { id: "q4",  n: "4",  label: "Mobile Number", type: "tel", req: true, attrs: 'maxlength="10" inputmode="numeric"' },
+  { id: "q5",  n: "5",  label: "Email ID (Optional)", type: "email" },
+  { id: "q6",  n: "6",  label: "State", type: "text", req: true },
+  { id: "q7",  n: "7",  label: "District", type: "text", req: true },
+  { id: "q8",  n: "8",  label: "Block/Taluka", type: "text", req: true },
+  { id: "q9",  n: "9",  label: "Village", type: "text", req: true },
+  { id: "q10", n: "10", label: "Educational Qualification", type: "radio", req: true,
+    opts: ["< Class X", "Class X", "Class XII", "ITI/Polytechnic", "Graduate", "Post-graduate", "Professional Qualification"] },
+  { id: "q11", n: "11", label: "Occupation", type: "radio", req: true,
+    opts: ["Student", "Farmer", "Self-employed", "Wage Labour", "Salaried Employment", "Unemployed", "Other"] },
+
+  { section: "Section 2: Enterprise Aspiration" },
+  { id: "q12", n: "12", label: "Do you wish to start or expand your own enterprise within the next 2 years?", type: "radio", req: true,
+    opts: ["Yes", "No", "Not Sure"] },
+  { id: "q13", n: "13", label: "Which sector interests you most?", type: "radio", req: true,
+    opts: ["Agriculture", "Food Processing", "Livestock & Dairy", "Fisheries", "Handloom & Handicrafts", "Manufacturing",
+           "Retail Business", "Services", "Tourism", "Digital/IT Services", "Renewable Energy", "Other"] },
+  { id: "q14", n: "14", label: "Have you already identified a business idea?", type: "radio", opts: YN, req: true },
+  { id: "q15", n: "15", label: "Briefly describe your business idea", hint: "(Short text)", type: "textarea", req: true,
+    showIf: { q: "q14", v: "Yes" }, attrs: 'maxlength="1000"' },
+  { id: "q16", n: "16", label: "Why do you want to become an entrepreneur?", type: "checkbox", req: true,
+    opts: ["Employment Generation", "Increase Income", "Family Business Expansion", "Local Problem Solving", "Passion/Interest", "Other"] },
+
+  { section: "Section 3: Existing Experience" },
+  { id: "q17", n: "17", label: "Have you ever run a business or income-generating activity?", type: "radio", opts: YN, req: true },
+  { id: "q18", n: "18", label: "If Yes, for how long?", type: "radio", req: true, showIf: { q: "q17", v: "Yes" },
+    opts: ["Less than 1 year", "1-3 years", "More than 3 years"] },
+  { id: "q19", n: "19", label: "Have you worked in any enterprise/business before?", type: "radio", opts: YN, req: true },
+  { id: "q19a", n: "19a", label: "If Yes, years of experience", type: "number", req: true, showIf: { q: "q19", v: "Yes" },
+    attrs: 'min="0" max="50" step="0.5" inputmode="decimal"' },
+  { id: "q20", n: "20", label: "Have you undergone any skill training?", type: "radio", opts: YN, req: true },
+  { id: "q21", n: "21", label: "If Yes, training area", type: "checkbox", req: true, showIf: { q: "q20", v: "Yes" },
+    opts: ["Technical Skill", "Agriculture", "Computer/Digital", "Food Processing", "Marketing", "Financial Management", "Other"] },
+
+  { section: "Section 4: Entrepreneurial Competencies", note: "Rate yourself on a scale of 1-5 (1 = Very Low, 5 = Very High)" },
+  { id: "q22", n: "22", label: "I am willing to take calculated risks.", type: "rating", req: true },
+  { id: "q23", n: "23", label: "I can identify business opportunities around me.", type: "rating", req: true },
+  { id: "q24", n: "24", label: "I can persuade people and build networks.", type: "rating", req: true },
+  { id: "q25", n: "25", label: "I can work consistently to achieve goals.", type: "rating", req: true },
+  { id: "q26", n: "26", label: "I can solve problems independently.", type: "rating", req: true },
+  { id: "q27", n: "27", label: "I am willing to invest time and effort in building a business.", type: "rating", req: true },
+  { id: "q28", n: "28", label: "I can lead a team or manage workers.", type: "rating", req: true },
+  { id: "q29", n: "29", label: "I am comfortable using mobile apps and digital platforms.", type: "rating", req: true },
+
+  { section: "Section 5: Resource Readiness" },
+  { id: "q30", n: "30", label: "Do you have access to land, workspace or infrastructure required for business?", type: "radio", opts: YNP, req: true },
+  { id: "q31", n: "31", label: "Do you have family support for starting a business?", type: "radio", opts: YNP, req: true },
+  { id: "q32", n: "32", label: "Do you have personal savings that can be invested?", type: "radio", opts: YN, req: true },
+  { id: "q33", n: "33", label: "Approximate amount available for investment", type: "radio", req: true,
+    opts: ["Below ₹25,000", "₹25,000-₹1 lakh", "₹1-5 lakh", "More than ₹5 lakh"] },
+  { id: "q34", n: "34", label: "Are you aware of bank loans and government schemes for enterprises?", type: "radio", opts: YN, req: true },
+  { id: "q34a", n: "34a", label: "CKYC Number (if available)", hint: "14 digits", type: "text", attrs: 'maxlength="14" inputmode="numeric"' },
+  { id: "q34b", n: "34b", label: "Aadhaar Number (if available)", hint: "Only checked for validity; only the last 4 digits are stored.", type: "text",
+    attrs: 'maxlength="14" inputmode="numeric" autocomplete="off"' },
+  { id: "q34c", n: "34c", label: "CIBIL Score (if known)", hint: "Between 300 and 900", type: "number", attrs: 'min="300" max="900" inputmode="numeric"' },
+  { id: "q35", n: "35", label: "Have you ever availed a bank loan?", type: "radio", opts: YN, req: true },
+
+  { section: "Section 6: Market & Digital Orientation" },
+  { id: "q36", n: "36", label: "Have you ever sold any product/service in the market?", type: "radio", opts: YN, req: true },
+  { id: "q37", n: "37", label: "Do you use smartphones regularly?", type: "radio", opts: YN, req: true },
+  { id: "q38", n: "38", label: "Are you comfortable with:", type: "checkbox", req: true,
+    opts: ["UPI Payments", "Online Banking", "Social Media Marketing", "E-commerce Platforms", "None of the above"] },
+  { id: "q39", n: "39", label: "Do you use WhatsApp for business communication?", type: "radio", opts: YN, req: true },
+  { id: "q40", n: "40", label: "Do you believe there is a market demand for your business idea?", type: "radio", opts: ["Yes", "No", "Not Sure"], req: true },
+
+  { section: "Section 7: Support Required" },
+  { id: "q41", n: "41", label: "What support do you need most? (Select up to 3)", type: "checkbox", req: true, max: 3,
+    opts: ["Business Idea Development", "Skill Training", "Business Plan Preparation", "Bank Credit", "Government Schemes",
+           "Market Linkage", "Digital Marketing", "Mentorship", "Technology Support", "Registration & Compliance"] },
+  { id: "q42", n: "42", label: "Are you willing to participate in mentoring and incubation programmes?", type: "radio", opts: YN, req: true },
+  { id: "q43", n: "43", label: "Are you willing to attend entrepreneurship training programmes?", type: "radio", opts: YN, req: true },
+  { id: "q44", n: "44", label: "Are you willing to be contacted by GYS mentors and partners?", type: "radio", opts: YN, req: true },
+  { id: "q45", n: "45", label: "In one sentence, tell us why you believe you can become a successful entrepreneur.", type: "textarea", req: true,
+    attrs: 'maxlength="500"' },
+
+  { section: "Consent" },
+  { id: "q46", n: "46", label: "I agree that the information provided in this form may be stored and used by the Gram Yuva Shakti Campaign and shared with GYS mentors and partners for enterprise support.",
+    type: "radio", opts: ["Yes, I agree"], req: true }
+];
+
+/* =========================================================
+   3. RENDER
+   ========================================================= */
+function esc(s) {
+  return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+function render() {
+  let html = "";
+  FORM.forEach(q => {
+    if (q.section) {
+      html += `<h2>${esc(q.section)}</h2>`;
+      if (q.note) html += `<p class="note">${esc(q.note)}</p>`;
+      return;
+    }
+    html += `<div class="q" id="wrap_${q.id}"${q.showIf ? " hidden" : ""}>`;
+    html += `<span class="ql">${esc(q.n)}. ${esc(q.label)}${q.req ? ' <span class="req">*</span>' : ""}</span>`;
+    if (q.hint) html += `<div class="hint">${esc(q.hint)}</div>`;
+    switch (q.type) {
+      case "text": case "tel": case "email": case "number":
+        html += `<input type="${q.type}" name="${q.id}" ${q.attrs || ""}>`; break;
+      case "textarea":
+        html += `<textarea name="${q.id}" rows="3" ${q.attrs || ""}></textarea>`; break;
+      case "radio": case "checkbox":
+        q.opts.forEach(o => {
+          html += `<label class="opt"><input type="${q.type}" name="${q.id}" value="${esc(o)}"> ${esc(o)}</label>`;
+        }); break;
+      case "rating":
+        html += `<div class="rating">` +
+          [1, 2, 3, 4, 5].map(v => `<label><input type="radio" name="${q.id}" value="${v}"> ${v}</label>`).join("") +
+          `</div>`; break;
+    }
+    html += `<div class="err" id="err_${q.id}"></div></div>`;
+  });
+  document.getElementById("form").insertAdjacentHTML("afterbegin", html);
+}
+
+/* =========================================================
+   4. HELPERS
+   ========================================================= */
+function val(id) {
+  const els = [...document.getElementsByName(id)];
+  if (!els.length) return "";
+  const t = els[0].type;
+  if (t === "radio") { const c = els.find(e => e.checked); return c ? c.value : ""; }
+  if (t === "checkbox") return els.filter(e => e.checked).map(e => e.value).join("; ");
+  return els[0].value.trim();
+}
+
+function isVisible(id) {
+  return !document.getElementById("wrap_" + id).hidden;
+}
+
+function updateVisibility() {
+  FORM.forEach(q => {
+    if (!q.showIf) return;
+    document.getElementById("wrap_" + q.id).hidden = val(q.showIf.q) !== q.showIf.v;
+  });
+}
+
+// Verhoeff checksum used by Aadhaar
+const VD = [[0,1,2,3,4,5,6,7,8,9],[1,2,3,4,0,6,7,8,9,5],[2,3,4,0,1,7,8,9,5,6],[3,4,0,1,2,8,9,5,6,7],[4,0,1,2,3,9,5,6,7,8],
+            [5,9,8,7,6,0,4,3,2,1],[6,5,9,8,7,1,0,4,3,2],[7,6,5,9,8,2,1,0,4,3],[8,7,6,5,9,3,2,1,0,4],[9,8,7,6,5,4,3,2,1,0]];
+const VP = [[0,1,2,3,4,5,6,7,8,9],[1,5,7,6,2,8,3,0,9,4],[5,8,0,3,7,9,6,1,4,2],[8,9,1,6,0,4,3,5,2,7],
+            [9,4,5,3,1,2,6,8,7,0],[4,2,8,6,5,7,3,9,0,1],[2,7,9,3,8,0,6,4,1,5],[7,0,4,6,9,1,3,2,5,8]];
+function validAadhaar(num) {
+  if (!/^[2-9]\d{11}$/.test(num)) return false;
+  let c = 0;
+  num.split("").reverse().map(Number).forEach((d, i) => { c = VD[c][VP[i % 8][d]]; });
+  return c === 0;
+}
+
+/* =========================================================
+   5. VALIDATION
+   ========================================================= */
+function setErr(id, msg) {
+  document.getElementById("err_" + id).textContent = msg || "";
+  document.getElementById("wrap_" + id).classList.toggle("invalid", !!msg);
+}
+
+function validate() {
+  let first = null;
+  FORM.forEach(q => {
+    if (q.section) return;
+    let msg = "";
+    const v = val(q.id);
+    if (isVisible(q.id)) {
+      if (q.req && !v) msg = "This question is required.";
+      else if (v) {
+        if (q.id === "q4" && !/^[6-9]\d{9}$/.test(v)) msg = "Enter a valid 10-digit mobile number.";
+        if (q.id === "q5" && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) msg = "Enter a valid email ID.";
+        if (q.id === "q19a" && (isNaN(v) || +v < 0 || +v > 50)) msg = "Enter years between 0 and 50.";
+        if (q.id === "q34a" && !/^\d{14}$/.test(v)) msg = "CKYC number must be 14 digits.";
+        if (q.id === "q34b" && !validAadhaar(v.replace(/\s/g, ""))) msg = "Enter a valid 12-digit Aadhaar number.";
+        if (q.id === "q34c" && (isNaN(v) || +v < 300 || +v > 900)) msg = "CIBIL score must be between 300 and 900.";
+      }
+    }
+    setErr(q.id, msg);
+    if (msg && !first) first = q.id;
+  });
+  if (!first && val("q46") !== "Yes, I agree") {
+    setErr("q46", "Consent is required to submit this form.");
+    first = "q46";
+  }
+  if (first) document.getElementById("wrap_" + first).scrollIntoView({ behavior: "smooth", block: "center" });
+  return !first;
+}
+
+/* =========================================================
+   6. SUBMIT
+   ========================================================= */
+function buildPayload() {
+  const data = { submitted_at: new Date().toISOString() };
+  FORM.forEach(q => {
+    if (q.section) return;
+    data[q.id] = isVisible(q.id) ? val(q.id) : "";
+  });
+  // Never send the full Aadhaar number – send validity + last 4 digits only
+  const a = data.q34b.replace(/\s/g, "");
+  data.q34b = a ? "XXXX-XXXX-" + a.slice(-4) : "";
+  data.q34b_valid = a && validAadhaar(a) ? "Yes" : "No";
+  return data;
+}
+
+async function onSubmit(e) {
+  e.preventDefault();
+  const status = document.getElementById("status");
+  const btn = document.getElementById("submitBtn");
+  status.textContent = "";
+  if (!validate()) { status.textContent = "Please correct the highlighted questions."; return; }
+  if (SCRIPT_URL.indexOf("https://script.google.com/") !== 0) {
+    status.textContent = "Form is not connected yet (SCRIPT_URL not set)."; return;
+  }
+  btn.disabled = true;
+  status.textContent = "Submitting… please wait.";
+  try {
+    // text/plain avoids a CORS preflight, which Apps Script does not support
+    const res = await fetch(SCRIPT_URL, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(buildPayload())
+    });
+    const out = await res.json().catch(() => ({}));
+    if (out.status && out.status !== "success") throw new Error(out.message || "Server error");
+    document.getElementById("form").style.display = "none";
+    document.getElementById("thanks").style.display = "block";
+    if (out.responseId) document.getElementById("respId").textContent = "Response ID: " + out.responseId;
+    window.scrollTo(0, 0);
+  } catch (err) {
+    status.textContent = "Submission failed: " + err.message + ". Please check your connection and try again.";
+    btn.disabled = false;
+  }
+}
+
+/* =========================================================
+   7. INIT
+   ========================================================= */
+render();
+const form = document.getElementById("form");
+form.addEventListener("change", e => {
+  const t = e.target;
+  // Q41: maximum 3 selections
+  if (t.name === "q41" && t.checked && document.querySelectorAll('input[name="q41"]:checked').length > 3) {
+    t.checked = false;
+    setErr("q41", "You can select up to 3 options.");
+    return;
+  }
+  // Q38: "None of the above" is exclusive
+  if (t.name === "q38" && t.checked) {
+    document.querySelectorAll('input[name="q38"]').forEach(c => {
+      if (c !== t && (t.value === "None of the above" || c.value === "None of the above")) c.checked = false;
+    });
+  }
+  if (t.name) setErr(t.name, "");
+  updateVisibility();
+});
+form.addEventListener("submit", onSubmit);
+</script>
+</body>
+</html>
