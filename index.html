@@ -26,10 +26,10 @@
     margin: 0; background: var(--bg); color: var(--ink);
     font-family: "Mukta", "Noto Sans Tamil", "Noto Sans", Arial, sans-serif; font-size: 16px; line-height: 1.55;
   }
- 
+
   .progress { position: fixed; top: 0; left: 0; right: 0; height: 4px; background: var(--line); z-index: 20; }
   .progress span { display: block; height: 100%; width: 0; background: var(--green-light); transition: width .3s ease; }
- 
+
   /* Header */
   .hero { background: #fff; border-bottom: 3px solid var(--green); }
   .hero-in { max-width: 720px; margin: 0 auto; padding: 28px 20px 24px; display: flex; gap: 18px; align-items: center; }
@@ -37,9 +37,9 @@
   .hero h1 { font-weight: 600; font-size: 26px; line-height: 1.2; margin: 0 0 2px; color: var(--green-dark); }
   .hero .campaign { margin: 0 0 6px; font-size: 15px; color: var(--green); font-weight: 500; }
   .hero .intro { margin: 0; font-size: 15px; color: var(--muted); max-width: 56ch; }
- 
+
   main { max-width: 720px; margin: 0 auto; padding: 28px 20px 40px; }
- 
+
   /* Sections */
   .sec { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 22px 22px 8px; margin-bottom: 18px; }
   .sec-head { display: flex; align-items: center; gap: 12px; }
@@ -51,7 +51,7 @@
   .sec.done .step { background: var(--green); color: #fff; }
   .sec h2 { font-weight: 600; font-size: 20px; margin: 0; color: var(--green-dark); }
   .sec .note { margin: 6px 0 0; color: var(--muted); font-size: 15px; }
- 
+
   /* Questions */
   .q { padding: 18px 0; border-bottom: 1px solid var(--line); }
   .q:last-child { border-bottom: 0; }
@@ -59,7 +59,7 @@
   .ql .n { color: var(--green); margin-right: 6px; font-weight: 600; }
   .req { color: var(--err); }
   .hint { font-size: 14px; color: var(--muted); margin: -6px 0 10px; }
- 
+
   /* Options */
   .opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; }
   .opt {
@@ -71,7 +71,7 @@
   .opt input { accent-color: var(--green); width: 18px; height: 18px; margin: 0; flex-shrink: 0; cursor: pointer; }
   .opt:has(input:checked) { border-color: var(--green); background: var(--green-tint); }
   .opt:has(input:focus-visible) { outline: 2px solid var(--green); outline-offset: 2px; }
- 
+
   /* Rating */
   .rating { display: grid; grid-template-columns: repeat(5, 1fr); max-width: 340px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; background: #fff; }
   .rating label { position: relative; }
@@ -85,7 +85,7 @@
   .rating input:checked + span { background: var(--green); color: #fff; }
   .rating input:focus-visible + span { outline: 2px solid var(--green-dark); outline-offset: -2px; }
   .scale { display: flex; justify-content: space-between; max-width: 340px; font-size: 13px; color: var(--muted); margin-top: 4px; }
- 
+
   /* Text fields */
   input[type=text], input[type=tel], input[type=email], input[type=number], textarea {
     width: 100%; padding: 10px 12px; font: inherit; font-size: 16px; color: var(--ink); background: #fff;
@@ -94,20 +94,34 @@
   textarea { resize: vertical; min-height: 88px; }
   input:focus, textarea:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(11,107,58,.15); }
   .other { margin-top: 8px; }
- 
+
   /* Errors */
   .err { color: var(--err); font-size: 14px; margin-top: 6px; white-space: pre-line; }
-  /* Tamil translation lines */
-  .ta { display: block; font-family: "Noto Sans Tamil", "Mukta", sans-serif; font-weight: 400; font-size: .9em; color: var(--muted); margin-top: 2px; line-height: 1.5; }
-  .ql .ta { font-size: 15px; }
-  .opt .ta { font-size: 13.5px; margin-top: 1px; }
-  .sec h2 .ta, .hero h1 .ta, #thanks h2 .ta { font-weight: 500; color: inherit; opacity: .85; font-size: .78em; }
-  .submit .ta { color: inherit; font-size: 15px; font-weight: 500; opacity: .95; }
+  /* Language: only the chosen language is shown */
+  .ta { display: none; }
+  body.lang-ta .ta { display: inline; }
+  body.lang-ta .en { display: none; }
+  body.lang-ta { font-family: "Noto Sans Tamil", "Mukta", Arial, sans-serif; }
+  body.lang-ta .hero h1 { font-size: 23px; line-height: 1.35; }
+  body.lang-ta .ql { line-height: 1.6; }
+
+  /* Language switch */
+  .lang-switch {
+    margin-left: auto; align-self: flex-start; flex-shrink: 0; display: inline-flex;
+    background: var(--green-tint); border: 1px solid #cfe3d5; border-radius: 999px; padding: 3px;
+  }
+  .lang-switch button {
+    border: 0; background: transparent; color: var(--green-dark); font: inherit; font-size: 14.5px; font-weight: 500;
+    padding: 6px 14px; border-radius: 999px; cursor: pointer; transition: background .15s, color .15s;
+  }
+  .lang-switch button[lang="ta"] { font-family: "Noto Sans Tamil", "Mukta", sans-serif; }
+  .lang-switch button[aria-pressed="true"] { background: var(--green); color: #fff; }
+  .lang-switch button:focus-visible { outline: 2px solid var(--green-dark); outline-offset: 2px; }
   .err:empty { display: none; }
   .q.invalid .ql { color: var(--err); }
   .q.invalid input[type=text], .q.invalid input[type=tel], .q.invalid input[type=email],
   .q.invalid input[type=number], .q.invalid textarea, .q.invalid .rating { border-color: var(--err); }
- 
+
   /* Submit */
   .submit {
     width: 100%; border: 0; border-radius: 8px; padding: 14px 20px; cursor: pointer;
@@ -120,7 +134,7 @@
   #status { margin-top: 12px; text-align: center; color: var(--muted); white-space: pre-line; }
   #status.bad { color: var(--err); }
   .count { white-space: pre-line; text-align: center; color: var(--muted); font-size: 14px; margin: 4px 0 10px; }
- 
+
   /* Thank you */
   #thanks { display: none; text-align: center; background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 40px 24px; }
   .tick {
@@ -133,11 +147,12 @@
     display: inline-block; margin: 10px 0 12px; padding: 8px 16px; border-radius: 8px;
     background: var(--green-tint); font-weight: 600; font-size: 18px; color: var(--green-dark);
   }
- 
+
   footer { text-align: center; font-size: 13px; color: var(--muted); padding: 0 20px 28px; }
- 
+
   @media (max-width: 560px) {
-    .hero-in { padding: 20px 16px 18px; gap: 12px; flex-direction: column; align-items: flex-start; }
+    .hero-in { padding: 20px 16px 18px; gap: 12px; flex-direction: column; align-items: flex-start; position: relative; }
+    .lang-switch { position: absolute; top: 20px; right: 16px; }
     .logo-chip img { height: 48px; }
     .hero h1 { font-size: 21px; }
     main { padding: 20px 12px 32px; }
@@ -151,7 +166,7 @@
 </head>
 <body>
 <div class="progress" aria-hidden="true"><span id="bar"></span></div>
- 
+
 <header class="hero">
   <div class="hero-in">
     <div class="logo-chip">
@@ -159,13 +174,17 @@
            onerror="this.onerror=null;this.src='https://raw.githubusercontent.com/NABARD296/GYS/main/fd674d5c-6ce0-4729-8a51-534cf335e765.jpeg';">
     </div>
     <div>
-      <h1>Enterprise Readiness Assessment<span class="ta">தொழில் ஆயத்தநிலை மதிப்பீடு</span></h1>
-      <p class="campaign">Nationwide Gram Yuva Shakti Campaign – Annexure III<span class="ta" style="color:inherit">தேசிய கிராம யுவ சக்தி இயக்கம் – இணைப்பு III</span></p>
-      <p class="intro">Takes about 10 minutes. Answer honestly, so mentors can match the right training, credit and support to you.<span class="ta">சுமார் 10 நிமிடங்கள் ஆகும். உங்களுக்குப் பொருத்தமான பயிற்சி, கடன் மற்றும் ஆதரவை வழிகாட்டிகள் வழங்க, நேர்மையாகப் பதிலளிக்கவும்.</span></p>
+      <h1><span class="en">Enterprise Readiness Assessment</span><span class="ta" lang="ta">தொழில்முனைவுத் தயார்நிலை மதிப்பீடு</span></h1>
+      <p class="campaign"><span class="en">Nationwide Gram Yuva Shakti Campaign – Annexure III</span><span class="ta" lang="ta">நாடு தழுவிய கிராம யுவ சக்தி இயக்கம் – இணைப்பு III</span></p>
+      <p class="intro"><span class="en">Takes about 10 minutes. Answer honestly, so mentors can match the right training, credit and support to you. You can type your answers in English or Tamil.</span><span class="ta" lang="ta">சுமார் 10 நிமிடங்கள் ஆகும். உங்களுக்குப் பொருத்தமான பயிற்சி, கடன் மற்றும் ஆதரவை வழிகாட்டிகள் வழங்க, நேர்மையாகப் பதிலளிக்கவும். பதில்களைத் தமிழிலோ ஆங்கிலத்திலோ தட்டச்சு செய்யலாம்.</span></p>
+    </div>
+    <div class="lang-switch" role="group" aria-label="Language / மொழி">
+      <button type="button" data-lang="en" aria-pressed="true">English</button>
+      <button type="button" data-lang="ta" lang="ta" aria-pressed="false">தமிழ்</button>
     </div>
   </div>
 </header>
- 
+
 <main>
   <form id="form" novalidate>
     <div id="sections"></div>
@@ -175,24 +194,24 @@
       <div id="status" role="status" aria-live="polite"></div>
     </div>
   </form>
- 
+
   <div id="thanks" role="status" aria-live="polite">
     <div class="tick" aria-hidden="true">✓</div>
-    <h2>Assessment submitted<span class="ta">மதிப்பீடு சமர்ப்பிக்கப்பட்டது</span></h2>
-    <p>Your answers have been recorded. A GYS mentor or partner may contact you about next steps.<span class="ta">உங்கள் பதில்கள் பதிவு செய்யப்பட்டன. அடுத்த கட்டங்கள் குறித்து GYS வழிகாட்டி அல்லது கூட்டாளர் உங்களைத் தொடர்புகொள்ளலாம்.</span></p>
+    <h2><span class="en">Assessment submitted</span><span class="ta" lang="ta">மதிப்பீடு சமர்ப்பிக்கப்பட்டது</span></h2>
+    <p><span class="en">Your answers have been recorded. A GYS mentor or partner may contact you about next steps.</span><span class="ta" lang="ta">உங்கள் பதில்கள் பதிவு செய்யப்பட்டன. அடுத்த கட்டம் குறித்து GYS வழிகாட்டி அல்லது கூட்டாளர் உங்களைத் தொடர்புகொள்ளலாம்.</span></p>
     <div class="rid" id="respId"></div>
-    <p>Keep this response ID for any follow-up.<span class="ta">தொடர் நடவடிக்கைகளுக்கு இந்தப் பதில் எண்ணைப் பாதுகாத்து வைக்கவும்.</span></p>
+    <p><span class="en">Keep this response ID for any follow-up.</span><span class="ta" lang="ta">தொடர் நடவடிக்கைகளுக்காக இந்தப் பதிவு எண்ணைக் குறித்து வைத்துக்கொள்ளவும்.</span></p>
   </div>
 </main>
- 
-<footer>Nationwide Gram Yuva Shakti Campaign</footer>
- 
+
+<footer><span class="en">Nationwide Gram Yuva Shakti Campaign</span><span class="ta" lang="ta">நாடு தழுவிய கிராம யுவ சக்தி இயக்கம்</span></footer>
+
 <script>
 /* =========================================================
    1. CONFIG – Apps Script Web App URL
    ========================================================= */
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzDF71MA9mciiOhFJkTwX-2zeTm9GXhERFDLNpr3YcecSdU9JRRlWSUp0Ge2iXSOrL_2Q/exec";
- 
+
 /* =========================================================
    2. QUESTIONS (Annexure III wording)
    Fields numbered with a letter (1a, 1b, 19a, 34a–34c, 46) are not in
@@ -201,7 +220,7 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzDF71MA9mciiOhFJkTw
    ========================================================= */
 const YN = ["Yes", "No"];
 const YNP = ["Yes", "No", "Partially"];
- 
+
 const FORM = [
   { section: "Basic Information" },
   { id: "q1",  n: "1",  label: "Full Name", type: "text", req: true, attrs: 'autocomplete="name"' },
@@ -219,7 +238,7 @@ const FORM = [
     opts: ["< Class X", "Class X", "Class XII", "ITI/Polytechnic", "Graduate", "Post-graduate", "Professional Qualification", "Other"] },
   { id: "q11", n: "11", label: "Occupation", type: "radio", req: true,
     opts: ["Student", "Farmer", "Self-employed", "Wage Labour", "Salaried Employment", "Unemployed", "Other"] },
- 
+
   { section: "Enterprise Aspiration" },
   { id: "q12", n: "12", label: "Do you wish to start or expand your own enterprise within the next 2 years?", type: "radio", req: true,
     opts: ["Yes", "No", "Not Sure"] },
@@ -231,7 +250,7 @@ const FORM = [
     showIf: { q: "q14", v: "Yes" }, attrs: 'maxlength="1000"' },
   { id: "q16", n: "16", label: "Why do you want to become an entrepreneur?", type: "checkbox", req: true,
     opts: ["Employment Generation", "Increase Income", "Family Business Expansion", "Local Problem Solving", "Passion/Interest", "Other"] },
- 
+
   { section: "Existing Experience" },
   { id: "q17", n: "17", label: "Have you ever run a business or income-generating activity?", type: "radio", opts: YN, req: true },
   { id: "q18", n: "18", label: "If Yes, for how long?", type: "radio", req: true, showIf: { q: "q17", v: "Yes" },
@@ -242,7 +261,7 @@ const FORM = [
   { id: "q20", n: "20", label: "Have you undergone any skill training?", type: "radio", opts: YN, req: true },
   { id: "q21", n: "21", label: "If Yes, training area", type: "checkbox", req: true, showIf: { q: "q20", v: "Yes" },
     opts: ["Technical Skill", "Agriculture", "Computer/Digital", "Food Processing", "Marketing", "Financial Management", "Other"] },
- 
+
   { section: "Entrepreneurial Competencies", note: "Rate yourself on a scale of 1-5 (1 = Very Low, 5 = Very High)" },
   { id: "q22", n: "22", label: "I am willing to take calculated risks.", type: "rating", req: true },
   { id: "q23", n: "23", label: "I can identify business opportunities around me.", type: "rating", req: true },
@@ -252,7 +271,7 @@ const FORM = [
   { id: "q27", n: "27", label: "I am willing to invest time and effort in building a business.", type: "rating", req: true },
   { id: "q28", n: "28", label: "I can lead a team or manage workers.", type: "rating", req: true },
   { id: "q29", n: "29", label: "I am comfortable using mobile apps and digital platforms.", type: "rating", req: true },
- 
+
   { section: "Resource Readiness" },
   { id: "q30", n: "30", label: "Do you have access to land, workspace or infrastructure required for business?", type: "radio", opts: YNP, req: true },
   { id: "q31", n: "31", label: "Do you have family support for starting a business?", type: "radio", opts: YNP, req: true },
@@ -265,7 +284,7 @@ const FORM = [
     attrs: 'maxlength="14" inputmode="numeric" autocomplete="off"' },
   { id: "q34c", n: "34c", label: "CIBIL Score (if known)", hint: "Between 300 and 900", type: "number", attrs: 'min="300" max="900" inputmode="numeric"' },
   { id: "q35", n: "35", label: "Have you ever availed a bank loan?", type: "radio", opts: YN, req: true },
- 
+
   { section: "Market & Digital Orientation" },
   { id: "q36", n: "36", label: "Have you ever sold any product/service in the market?", type: "radio", opts: YN, req: true },
   { id: "q37", n: "37", label: "Do you use smartphones regularly?", type: "radio", opts: YN, req: true },
@@ -273,7 +292,7 @@ const FORM = [
     opts: ["UPI Payments", "Online Banking", "Social Media Marketing", "E-commerce Platforms", "None of the above"] },
   { id: "q39", n: "39", label: "Do you use WhatsApp for business communication?", type: "radio", opts: YN, req: true },
   { id: "q40", n: "40", label: "Do you believe there is a market demand for your business idea?", type: "radio", opts: ["Yes", "No", "Not Sure"], req: true },
- 
+
   { section: "Support Required" },
   { id: "q41", n: "41", label: "What support do you need most? (Select up to 3)", type: "checkbox", req: true, max: 3,
     opts: ["Business Idea Development", "Skill Training", "Business Plan Preparation", "Bank Credit", "Government Schemes",
@@ -283,12 +302,12 @@ const FORM = [
   { id: "q44", n: "44", label: "Are you willing to be contacted by GYS mentors and partners?", type: "radio", opts: YN, req: true },
   { id: "q45", n: "45", label: "In one sentence, tell us why you believe you can become a successful entrepreneur.", type: "textarea", req: true,
     attrs: 'maxlength="500"' },
- 
+
   { section: "Consent" },
   { id: "q46", n: "46", label: "I agree that the information provided in this form may be stored and used by the Gram Yuva Shakti Campaign and shared with GYS mentors and partners for enterprise support.",
     type: "radio", opts: ["Yes, I agree"], req: true }
 ];
- 
+
 /* =========================================================
    TAMIL TRANSLATIONS
    Shown under the English text. Answers are still saved in
@@ -300,12 +319,12 @@ const TA = {
   "Enterprise Aspiration": "தொழில்முனைவு விருப்பம்",
   "Existing Experience": "தற்போதைய அனுபவம்",
   "Entrepreneurial Competencies": "தொழில்முனைவுத் திறன்கள்",
-  "Resource Readiness": "வள ஆயத்தநிலை",
-  "Market & Digital Orientation": "சந்தை மற்றும் டிஜிட்டல் நோக்குநிலை",
+  "Resource Readiness": "வளங்களின் தயார்நிலை",
+  "Market & Digital Orientation": "சந்தை மற்றும் டிஜிட்டல் அறிவு",
   "Support Required": "தேவைப்படும் ஆதரவு",
   "Consent": "ஒப்புதல்",
   "Rate yourself on a scale of 1-5 (1 = Very Low, 5 = Very High)": "1 முதல் 5 வரையிலான அளவில் உங்களை நீங்களே மதிப்பிடுங்கள் (1 = மிகக் குறைவு, 5 = மிக அதிகம்)",
- 
+
   // Questions
   "Full Name": "முழுப் பெயர்",
   "Father's Full Name": "தந்தையின் முழுப் பெயர்",
@@ -316,33 +335,33 @@ const TA = {
   "Email ID": "மின்னஞ்சல் முகவரி",
   "State": "மாநிலம்",
   "District": "மாவட்டம்",
-  "Block/Taluka": "வட்டாரம்/வட்டம்",
+  "Block/Taluka": "ஊராட்சி ஒன்றியம்/வட்டம்",
   "Village": "கிராமம்",
   "Educational Qualification": "கல்வித் தகுதி",
-  "Occupation": "தொழில்",
-  "Do you wish to start or expand your own enterprise within the next 2 years?": "அடுத்த 2 ஆண்டுகளுக்குள் உங்கள் சொந்தத் தொழிலைத் தொடங்கவோ விரிவுபடுத்தவோ விரும்புகிறீர்களா?",
-  "Which sector interests you most?": "எந்தத் துறை உங்களுக்கு மிகவும் ஆர்வமாக உள்ளது?",
-  "Have you already identified a business idea?": "நீங்கள் ஏற்கனவே ஒரு தொழில் யோசனையைத் தேர்ந்தெடுத்துள்ளீர்களா?",
+  "Occupation": "தற்போதைய பணி",
+  "Do you wish to start or expand your own enterprise within the next 2 years?": "அடுத்த 2 ஆண்டுகளுக்குள் சொந்தமாகத் தொழில் தொடங்கவோ, உங்கள் தொழிலை விரிவுபடுத்தவோ விரும்புகிறீர்களா?",
+  "Which sector interests you most?": "எந்தத் துறையில் உங்களுக்கு அதிக ஆர்வம் உள்ளது?",
+  "Have you already identified a business idea?": "நீங்கள் ஏற்கனவே ஒரு தொழில் யோசனையைக் கண்டறிந்துள்ளீர்களா?",
   "Briefly describe your business idea": "உங்கள் தொழில் யோசனையைச் சுருக்கமாக விவரிக்கவும்",
   "(Short text)": "(சுருக்கமான பதில்)",
   "Why do you want to become an entrepreneur?": "நீங்கள் ஏன் தொழில்முனைவோராக விரும்புகிறீர்கள்?",
-  "Have you ever run a business or income-generating activity?": "நீங்கள் எப்போதாவது ஒரு தொழில் அல்லது வருமானம் ஈட்டும் செயல்பாட்டை நடத்தியுள்ளீர்களா?",
+  "Have you ever run a business or income-generating activity?": "நீங்கள் எப்போதாவது ஏதேனும் தொழில் அல்லது வருமானம் ஈட்டும் செயல்பாட்டை நடத்தியுள்ளீர்களா?",
   "If Yes, for how long?": "ஆம் எனில், எவ்வளவு காலம்?",
-  "Have you worked in any enterprise/business before?": "இதற்கு முன் ஏதேனும் நிறுவனம்/தொழிலில் பணியாற்றியுள்ளீர்களா?",
-  "If Yes, years of experience": "ஆம் எனில், அனுபவ ஆண்டுகள்",
+  "Have you worked in any enterprise/business before?": "இதற்கு முன் ஏதேனும் தொழில் நிறுவனத்தில் பணியாற்றியுள்ளீர்களா?",
+  "If Yes, years of experience": "ஆம் எனில், எத்தனை ஆண்டு அனுபவம்?",
   "Have you undergone any skill training?": "ஏதேனும் திறன் பயிற்சி பெற்றுள்ளீர்களா?",
-  "If Yes, training area": "ஆம் எனில், பயிற்சித் துறை",
-  "I am willing to take calculated risks.": "கணக்கிட்ட அபாயங்களை ஏற்க நான் தயாராக உள்ளேன்.",
+  "If Yes, training area": "ஆம் எனில், எந்தத் துறையில் பயிற்சி?",
+  "I am willing to take calculated risks.": "நன்கு ஆராய்ந்து கணக்கிட்ட இடர்களை (ரிஸ்க்) எடுக்க நான் தயார்.",
   "I can identify business opportunities around me.": "என்னைச் சுற்றியுள்ள தொழில் வாய்ப்புகளை என்னால் அடையாளம் காண முடியும்.",
-  "I can persuade people and build networks.": "மக்களை நம்பவைத்துத் தொடர்பு வலையமைப்புகளை உருவாக்க என்னால் முடியும்.",
-  "I can work consistently to achieve goals.": "இலக்குகளை அடைய என்னால் தொடர்ந்து உழைக்க முடியும்.",
+  "I can persuade people and build networks.": "மற்றவர்களை என் கருத்தை ஏற்கச் செய்யவும், தொடர்புகளை உருவாக்கவும் என்னால் முடியும்.",
+  "I can work consistently to achieve goals.": "இலக்குகளை அடைய என்னால் விடாமுயற்சியுடன் உழைக்க முடியும்.",
   "I can solve problems independently.": "பிரச்சினைகளை என்னால் சுயமாகத் தீர்க்க முடியும்.",
-  "I am willing to invest time and effort in building a business.": "ஒரு தொழிலை உருவாக்க நேரத்தையும் உழைப்பையும் செலவிட நான் தயாராக உள்ளேன்.",
-  "I can lead a team or manage workers.": "ஒரு குழுவை வழிநடத்தவோ தொழிலாளர்களை நிர்வகிக்கவோ என்னால் முடியும்.",
-  "I am comfortable using mobile apps and digital platforms.": "கைபேசி செயலிகளையும் டிஜிட்டல் தளங்களையும் பயன்படுத்துவது எனக்கு எளிது.",
-  "Do you have access to land, workspace or infrastructure required for business?": "தொழிலுக்குத் தேவையான நிலம், பணியிடம் அல்லது உள்கட்டமைப்பு உங்களிடம் உள்ளதா?",
+  "I am willing to invest time and effort in building a business.": "ஒரு தொழிலை உருவாக்க நேரத்தையும் உழைப்பையும் செலவிட நான் தயார்.",
+  "I can lead a team or manage workers.": "ஒரு குழுவை வழிநடத்தவோ, பணியாளர்களை நிர்வகிக்கவோ என்னால் முடியும்.",
+  "I am comfortable using mobile apps and digital platforms.": "கைபேசி செயலிகளையும் டிஜிட்டல் தளங்களையும் என்னால் எளிதாகப் பயன்படுத்த முடியும்.",
+  "Do you have access to land, workspace or infrastructure required for business?": "தொழிலுக்குத் தேவையான நிலம், பணியிடம் அல்லது உள்கட்டமைப்பு வசதி உங்களுக்குக் கிடைக்குமா?",
   "Do you have family support for starting a business?": "தொழில் தொடங்க உங்கள் குடும்பத்தின் ஆதரவு உள்ளதா?",
-  "Do you have personal savings that can be invested?": "முதலீடு செய்யக்கூடிய தனிப்பட்ட சேமிப்பு உங்களிடம் உள்ளதா?",
+  "Do you have personal savings that can be invested?": "முதலீடு செய்யக்கூடிய சொந்தச் சேமிப்பு உங்களிடம் உள்ளதா?",
   "Approximate amount available for investment": "முதலீட்டுக்குக் கிடைக்கும் தோராயமான தொகை",
   "Are you aware of bank loans and government schemes for enterprises?": "தொழில்களுக்கான வங்கிக் கடன்கள் மற்றும் அரசுத் திட்டங்கள் பற்றி உங்களுக்குத் தெரியுமா?",
   "CKYC Number (if available)": "CKYC எண் (இருந்தால்)",
@@ -352,85 +371,89 @@ const TA = {
   "CIBIL Score (if known)": "CIBIL மதிப்பெண் (தெரிந்தால்)",
   "Between 300 and 900": "300 முதல் 900 வரை",
   "Have you ever availed a bank loan?": "நீங்கள் எப்போதாவது வங்கிக் கடன் பெற்றுள்ளீர்களா?",
-  "Have you ever sold any product/service in the market?": "சந்தையில் ஏதேனும் பொருள்/சேவையை விற்பனை செய்துள்ளீர்களா?",
+  "Have you ever sold any product/service in the market?": "சந்தையில் ஏதேனும் பொருளையோ சேவையையோ விற்பனை செய்துள்ளீர்களா?",
   "Do you use smartphones regularly?": "நீங்கள் ஸ்மார்ட்போனைத் தொடர்ந்து பயன்படுத்துகிறீர்களா?",
-  "Are you comfortable with:": "பின்வருவனவற்றைப் பயன்படுத்துவது உங்களுக்கு எளிதா:",
+  "Are you comfortable with:": "பின்வருவனவற்றில் எவற்றை நீங்கள் எளிதாகப் பயன்படுத்துவீர்கள்?",
   "Do you use WhatsApp for business communication?": "தொழில் தொடர்புக்கு வாட்ஸ்அப் பயன்படுத்துகிறீர்களா?",
   "Do you believe there is a market demand for your business idea?": "உங்கள் தொழில் யோசனைக்குச் சந்தையில் தேவை இருப்பதாக நம்புகிறீர்களா?",
   "What support do you need most? (Select up to 3)": "உங்களுக்கு மிகவும் தேவையான ஆதரவு எது? (அதிகபட்சம் 3 தேர்வு செய்யவும்)",
-  "Are you willing to participate in mentoring and incubation programmes?": "வழிகாட்டல் மற்றும் தொழில் வளர்ப்பு (இன்குபேஷன்) திட்டங்களில் பங்கேற்கத் தயாரா?",
-  "Are you willing to attend entrepreneurship training programmes?": "தொழில்முனைவுப் பயிற்சித் திட்டங்களில் கலந்துகொள்ளத் தயாரா?",
-  "Are you willing to be contacted by GYS mentors and partners?": "GYS வழிகாட்டிகள் மற்றும் கூட்டாளர்கள் உங்களைத் தொடர்புகொள்ளச் சம்மதமா?",
-  "In one sentence, tell us why you believe you can become a successful entrepreneur.": "நீங்கள் ஒரு வெற்றிகரமான தொழில்முனைவோராக முடியும் என்று ஏன் நம்புகிறீர்கள் என்பதை ஒரே வாக்கியத்தில் கூறுங்கள்.",
-  "I agree that the information provided in this form may be stored and used by the Gram Yuva Shakti Campaign and shared with GYS mentors and partners for enterprise support.": "இந்தப் படிவத்தில் அளிக்கப்பட்ட தகவல்களை கிராம யுவ சக்தி இயக்கம் சேமித்துப் பயன்படுத்தவும், தொழில் ஆதரவுக்காக GYS வழிகாட்டிகள் மற்றும் கூட்டாளர்களுடன் பகிரவும் நான் ஒப்புக்கொள்கிறேன்.",
- 
+  "Are you willing to participate in mentoring and incubation programmes?": "வழிகாட்டுதல் மற்றும் தொழில் வளர் காப்பகத் (இன்குபேஷன்) திட்டங்களில் பங்கேற்க விரும்புகிறீர்களா?",
+  "Are you willing to attend entrepreneurship training programmes?": "தொழில்முனைவுப் பயிற்சித் திட்டங்களில் கலந்துகொள்ள விரும்புகிறீர்களா?",
+  "Are you willing to be contacted by GYS mentors and partners?": "GYS வழிகாட்டிகளும் கூட்டாளர்களும் உங்களைத் தொடர்புகொள்ள சம்மதிக்கிறீர்களா?",
+  "In one sentence, tell us why you believe you can become a successful entrepreneur.": "நீங்கள் வெற்றிகரமான தொழில்முனைவோராக முடியும் என்று ஏன் நம்புகிறீர்கள்? ஒரே வாக்கியத்தில் கூறுங்கள்.",
+  "I agree that the information provided in this form may be stored and used by the Gram Yuva Shakti Campaign and shared with GYS mentors and partners for enterprise support.": "இந்தப் படிவத்தில் நான் அளித்துள்ள தகவல்களை கிராம யுவ சக்தி இயக்கம் சேமித்துப் பயன்படுத்தவும், தொழில் ஆதரவுக்காக GYS வழிகாட்டிகள் மற்றும் கூட்டாளர்களுடன் பகிர்ந்துகொள்ளவும் நான் ஒப்புக்கொள்கிறேன்.",
+
   // Options
   "Yes": "ஆம்", "No": "இல்லை", "Not Sure": "உறுதியாகத் தெரியவில்லை", "Partially": "ஓரளவு", "Other": "மற்றவை",
   "Female": "பெண்", "Male": "ஆண்", "Above 30": "30-க்கு மேல்",
+  "18-21": "18-21", "22-25": "22-25", "26-30": "26-30",
   "< Class X": "10-ஆம் வகுப்புக்குக் கீழ்", "Class X": "10-ஆம் வகுப்பு", "Class XII": "12-ஆம் வகுப்பு",
-  "ITI/Polytechnic": "ஐடிஐ/பாலிடெக்னிக்", "Graduate": "இளநிலைப் பட்டம்", "Post-graduate": "முதுநிலைப் பட்டம்",
-  "Professional Qualification": "தொழில்முறைத் தகுதி",
-  "Student": "மாணவர்", "Farmer": "விவசாயி", "Self-employed": "சுயதொழில்", "Wage Labour": "கூலித் தொழிலாளர்",
-  "Salaried Employment": "சம்பளப் பணி", "Unemployed": "வேலையில்லாதவர்",
-  "Agriculture": "வேளாண்மை", "Food Processing": "உணவு பதப்படுத்துதல்", "Livestock & Dairy": "கால்நடை மற்றும் பால்வளம்",
-  "Fisheries": "மீன்வளம்", "Handloom & Handicrafts": "கைத்தறி மற்றும் கைவினைப் பொருட்கள்", "Manufacturing": "உற்பத்தி",
-  "Retail Business": "சில்லறை வணிகம்", "Services": "சேவைகள்", "Tourism": "சுற்றுலா",
+  "ITI/Polytechnic": "ஐடிஐ/பாலிடெக்னிக்", "Graduate": "இளநிலைப் பட்டப்படிப்பு", "Post-graduate": "முதுநிலைப் பட்டப்படிப்பு",
+  "Professional Qualification": "தொழில்முறைப் படிப்பு",
+  "Student": "மாணவர்", "Farmer": "விவசாயி", "Self-employed": "சுயதொழில் செய்பவர்", "Wage Labour": "கூலித் தொழிலாளி",
+  "Salaried Employment": "சம்பள வேலை", "Unemployed": "வேலையில்லை",
+  "Agriculture": "வேளாண்மை", "Food Processing": "உணவுப் பதப்படுத்துதல்", "Livestock & Dairy": "கால்நடை மற்றும் பால்வளம்",
+  "Fisheries": "மீன்வளம்", "Handloom & Handicrafts": "கைத்தறி மற்றும் கைவினைப் பொருட்கள்", "Manufacturing": "உற்பத்தித் தொழில்",
+  "Retail Business": "சில்லறை வணிகம்", "Services": "சேவைத் தொழில்", "Tourism": "சுற்றுலா",
   "Digital/IT Services": "டிஜிட்டல்/தகவல் தொழில்நுட்பச் சேவைகள்", "Renewable Energy": "புதுப்பிக்கத்தக்க எரிசக்தி",
-  "Employment Generation": "வேலைவாய்ப்பு உருவாக்கம்", "Increase Income": "வருமானத்தை அதிகரித்தல்",
-  "Family Business Expansion": "குடும்பத் தொழில் விரிவாக்கம்", "Local Problem Solving": "உள்ளூர் பிரச்சினைகளுக்குத் தீர்வு",
+  "Employment Generation": "வேலைவாய்ப்பை உருவாக்க", "Increase Income": "வருமானத்தை அதிகரிக்க",
+  "Family Business Expansion": "குடும்பத் தொழிலை விரிவுபடுத்த", "Local Problem Solving": "உள்ளூர் பிரச்சினைகளுக்குத் தீர்வு காண",
   "Passion/Interest": "ஆர்வம்/விருப்பம்",
   "Less than 1 year": "1 ஆண்டுக்கும் குறைவு", "1-3 years": "1-3 ஆண்டுகள்", "More than 3 years": "3 ஆண்டுகளுக்கு மேல்",
-  "Technical Skill": "தொழில்நுட்பத் திறன்", "Computer/Digital": "கணினி/டிஜிட்டல்", "Marketing": "சந்தைப்படுத்தல்",
+  "Technical Skill": "தொழில்நுட்பத் திறன்", "Computer/Digital": "கணினி/டிஜிட்டல்", "Marketing": "சந்தைப்படுத்துதல்",
   "Financial Management": "நிதி மேலாண்மை",
   "Below ₹25,000": "₹25,000-க்குக் கீழ்", "₹25,000-₹1 lakh": "₹25,000 - ₹1 லட்சம்", "₹1-5 lakh": "₹1-5 லட்சம்",
   "More than ₹5 lakh": "₹5 லட்சத்துக்கு மேல்",
-  "UPI Payments": "யுபிஐ பணப்பரிமாற்றம்", "Online Banking": "இணைய வங்கிச் சேவை",
-  "Social Media Marketing": "சமூக ஊடகச் சந்தைப்படுத்தல்", "E-commerce Platforms": "மின்வணிகத் தளங்கள்",
+  "UPI Payments": "UPI பணப் பரிவர்த்தனை", "Online Banking": "இணைய வங்கிச் சேவை",
+  "Social Media Marketing": "சமூக ஊடகச் சந்தைப்படுத்துதல்", "E-commerce Platforms": "மின்வணிகத் தளங்கள்",
   "None of the above": "மேற்கண்ட எதுவும் இல்லை",
-  "Business Idea Development": "தொழில் யோசனை மேம்பாடு", "Skill Training": "திறன் பயிற்சி",
-  "Business Plan Preparation": "தொழில் திட்டம் தயாரித்தல்", "Bank Credit": "வங்கிக் கடன்",
-  "Government Schemes": "அரசுத் திட்டங்கள்", "Market Linkage": "சந்தை இணைப்பு", "Digital Marketing": "டிஜிட்டல் சந்தைப்படுத்தல்",
+  "Business Idea Development": "தொழில் யோசனையை மேம்படுத்துதல்", "Skill Training": "திறன் பயிற்சி",
+  "Business Plan Preparation": "தொழில் திட்ட அறிக்கை தயாரித்தல்", "Bank Credit": "வங்கிக் கடன்",
+  "Government Schemes": "அரசுத் திட்டங்கள்", "Market Linkage": "சந்தை இணைப்பு", "Digital Marketing": "டிஜிட்டல் சந்தைப்படுத்துதல்",
   "Mentorship": "வழிகாட்டுதல்", "Technology Support": "தொழில்நுட்ப ஆதரவு",
-  "Registration & Compliance": "பதிவு மற்றும் விதிமுறை இணக்கம்",
+  "Registration & Compliance": "பதிவு மற்றும் சட்ட இணக்கம்",
   "Yes, I agree": "ஆம், நான் ஒப்புக்கொள்கிறேன்",
- 
+
   // Screen text and messages
   "Very Low": "மிகக் குறைவு", "Very High": "மிக அதிகம்", "Please specify": "குறிப்பிடவும்",
   "Submit assessment": "மதிப்பீட்டைச் சமர்ப்பிக்கவும்", "Submitting…": "சமர்ப்பிக்கப்படுகிறது…",
-  "This question is required.": "இந்தக் கேள்விக்குப் பதில் கட்டாயம்.",
-  "Type your answer for “Other”.": "“மற்றவை” என்பதற்கான பதிலைத் தட்டச்சு செய்யவும்.",
+  "This question is required.": "இந்தக் கேள்விக்குப் பதிலளிப்பது கட்டாயம்.",
+  "Type your answer for “Other”.": "“மற்றவை” என்பதற்கான உங்கள் பதிலைத் தட்டச்சு செய்யவும்.",
   "Enter a valid 10-digit mobile number.": "சரியான 10 இலக்கக் கைபேசி எண்ணை உள்ளிடவும்.",
-  "Enter a valid email ID, for example name@gmail.com.": "சரியான மின்னஞ்சல் முகவரியை உள்ளிடவும், எ.கா. name@gmail.com.",
+  "Enter a valid email ID, for example name@gmail.com.": "சரியான மின்னஞ்சல் முகவரியை உள்ளிடவும் (எ.கா. name@gmail.com).",
   "Enter years between 0 and 50.": "0 முதல் 50 வரையிலான ஆண்டுகளை உள்ளிடவும்.",
   "CKYC number must be 14 digits.": "CKYC எண் 14 இலக்கங்களாக இருக்க வேண்டும்.",
   "Enter a valid 12-digit Aadhaar number.": "சரியான 12 இலக்க ஆதார் எண்ணை உள்ளிடவும்.",
   "CIBIL score must be between 300 and 900.": "CIBIL மதிப்பெண் 300 முதல் 900 வரை இருக்க வேண்டும்.",
-  "Tick the consent box to submit.": "சமர்ப்பிக்க ஒப்புதலைத் தேர்வு செய்யவும்.",
-  "You can select up to 3 options. Untick one to choose another.": "அதிகபட்சம் 3 விருப்பங்களைத் தேர்வு செய்யலாம். வேறொன்றைத் தேர்வு செய்ய ஒன்றை நீக்கவும்.",
-  "Some answers need attention. They are marked in red above.": "சில பதில்களைச் சரிபார்க்க வேண்டும். அவை மேலே சிவப்பு நிறத்தில் குறிக்கப்பட்டுள்ளன.",
-  "This can take up to 20 seconds. Please keep this page open.": "இதற்கு 20 விநாடிகள் வரை ஆகலாம். இந்தப் பக்கத்தை மூட வேண்டாம்.",
-  "Check your internet connection and press Submit assessment again.": "இணைய இணைப்பைச் சரிபார்த்து மீண்டும் சமர்ப்பிக்கவும்.",
-  "All required questions answered": "அனைத்து கட்டாயக் கேள்விகளுக்கும் பதிலளிக்கப்பட்டது"
+  "Tick the consent box to submit.": "சமர்ப்பிக்க, ஒப்புதலைத் தேர்வு செய்யவும்.",
+  "You can select up to 3 options. Untick one to choose another.": "அதிகபட்சம் 3 விருப்பங்களைத் தேர்வு செய்யலாம். வேறொன்றைத் தேர்வு செய்ய, ஒன்றை நீக்கவும்.",
+  "Some answers need attention. They are marked in red above.": "சில பதில்களைச் சரிசெய்ய வேண்டும். அவை மேலே சிவப்பு நிறத்தில் குறிக்கப்பட்டுள்ளன.",
+  "This can take up to 30 seconds. Please keep this page open.": "இதற்கு 30 விநாடிகள் வரை ஆகலாம். இந்தப் பக்கத்தை மூட வேண்டாம்.",
+  "Not submitted. Check your internet connection and press Submit assessment again.": "சமர்ப்பிக்க இயலவில்லை. இணைய இணைப்பைச் சரிபார்த்து மீண்டும் சமர்ப்பிக்கவும்.",
+  "All required questions answered": "அனைத்துக் கட்டாயக் கேள்விகளுக்கும் பதிலளிக்கப்பட்டது"
 };
- 
-// English + Tamil as HTML (Tamil on its own line)
+
+// Current language: "en" or "ta"
+let LANG = "en";
+
+// Both languages as HTML; CSS shows only the chosen one
 function bi(en) {
-  return esc(en) + (TA[en] ? `<span class="ta">${esc(TA[en])}</span>` : "");
+  return TA[en] ? `<span class="en">${esc(en)}</span><span class="ta" lang="ta">${esc(TA[en])}</span>` : esc(en);
 }
-// English + Tamil as plain text (for messages)
-function biText(en) {
-  return en ? en + (TA[en] ? "\n" + TA[en] : "") : "";
+// Text in the chosen language (for messages)
+function tx(en) {
+  return LANG === "ta" && TA[en] ? TA[en] : en;
 }
- 
+
 const QUESTIONS = FORM.filter(q => !q.section);
- 
+
 /* =========================================================
    3. RENDER
    ========================================================= */
 function esc(s) {
   return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
- 
+
 function render() {
   let html = "", sec = 0, open = false;
   FORM.forEach(q => {
@@ -444,8 +467,8 @@ function render() {
     }
     q.sec = sec;
     html += `<div class="q" id="wrap_${q.id}"${q.showIf ? " hidden" : ""}>`;
-    html += `<span class="ql" id="lbl_${q.id}"><span class="n">${esc(q.n)}.</span>${esc(q.label)}${q.req ? ' <span class="req" aria-hidden="true">*</span>' : ""}${TA[q.label] ? `<span class="ta">${esc(TA[q.label])}</span>` : ""}</span>`;
-    if (q.hint) html += `<div class="hint">${esc(q.hint)}${TA[q.hint] ? " / " + esc(TA[q.hint]) : ""}</div>`;
+    html += `<span class="ql" id="lbl_${q.id}"><span class="n">${esc(q.n)}.</span>${bi(q.label)}${q.req ? ' <span class="req" aria-hidden="true">*</span>' : ""}</span>`;
+    if (q.hint) html += `<div class="hint">${bi(q.hint)}</div>`;
     switch (q.type) {
       case "text": case "tel": case "email": case "number":
         html += `<input type="${q.type}" name="${q.id}" aria-labelledby="lbl_${q.id}" ${q.attrs || ""}>`; break;
@@ -456,7 +479,7 @@ function render() {
           q.opts.map(o => `<label class="opt"><input type="${q.type}" name="${q.id}" value="${esc(o)}"><span>${bi(o)}</span></label>`).join("") +
           `</div>`;
         if (q.opts.includes("Other")) {
-          html += `<input type="text" class="other" name="${q.id}_other" placeholder="Please specify / குறிப்பிடவும்" maxlength="100" aria-label="Please specify other" hidden>`;
+          html += `<input type="text" class="other" name="${q.id}_other" placeholder="Please specify" maxlength="100" aria-label="Please specify other" hidden>`;
         }
         break;
       case "rating":
@@ -470,16 +493,16 @@ function render() {
   if (open) html += `</section>`;
   document.getElementById("sections").innerHTML = html;
 }
- 
+
 /* =========================================================
    4. HELPERS
    ========================================================= */
 function otherBox(id) { return document.getElementsByName(id + "_other")[0]; }
- 
+
 function otherChecked(id) {
   return [...document.getElementsByName(id)].some(e => e.value === "Other" && e.checked);
 }
- 
+
 function val(id) {
   const els = [...document.getElementsByName(id)];
   if (!els.length) return "";
@@ -496,16 +519,16 @@ function val(id) {
   if (t === "checkbox") return els.filter(e => e.checked).map(e => fix(e.value)).join("; ");
   return els[0].value.trim();
 }
- 
+
 function isVisible(id) { return !document.getElementById("wrap_" + id).hidden; }
- 
+
 function answered(q) {
   if (!val(q.id)) return false;
   const box = otherBox(q.id);
   if (box && otherChecked(q.id) && !box.value.trim()) return false;
   return true;
 }
- 
+
 function updateVisibility() {
   QUESTIONS.forEach(q => {
     if (q.showIf) document.getElementById("wrap_" + q.id).hidden = val(q.showIf.q) !== q.showIf.v;
@@ -513,14 +536,16 @@ function updateVisibility() {
     if (box) box.hidden = !otherChecked(q.id);
   });
 }
- 
+
 function updateProgress() {
   const req = QUESTIONS.filter(q => q.req && isVisible(q.id));
   const done = req.filter(answered).length;
   document.getElementById("bar").style.width = (req.length ? (done / req.length) * 100 : 0) + "%";
   document.getElementById("count").textContent = done === req.length
-    ? biText("All required questions answered")
-    : `${done} of ${req.length} required questions answered\nகட்டாயக் கேள்விகளில் ${done} / ${req.length} பதிலளிக்கப்பட்டது`;
+    ? tx("All required questions answered")
+    : (LANG === "ta"
+        ? `கட்டாயக் கேள்விகள்: ${req.length} இல் ${done} க்குப் பதிலளிக்கப்பட்டது`
+        : `${done} of ${req.length} required questions answered`);
   const secs = [...new Set(QUESTIONS.map(q => q.sec))];
   secs.forEach(s => {
     const list = req.filter(q => q.sec === s);
@@ -530,7 +555,7 @@ function updateProgress() {
     el.querySelector(".step").textContent = complete ? "✓" : s;
   });
 }
- 
+
 // Verhoeff checksum used by Aadhaar
 const VD = [[0,1,2,3,4,5,6,7,8,9],[1,2,3,4,0,6,7,8,9,5],[2,3,4,0,1,7,8,9,5,6],[3,4,0,1,2,8,9,5,6,7],[4,0,1,2,3,9,5,6,7,8],
             [5,9,8,7,6,0,4,3,2,1],[6,5,9,8,7,1,0,4,3,2],[7,6,5,9,8,2,1,0,4,3],[8,7,6,5,9,3,2,1,0,4],[9,8,7,6,5,4,3,2,1,0]];
@@ -542,17 +567,18 @@ function validAadhaar(num) {
   num.split("").reverse().map(Number).forEach((d, i) => { c = VD[c][VP[i % 8][d]]; });
   return c === 0;
 }
- 
+
 /* =========================================================
    5. VALIDATION
    ========================================================= */
 function setErr(id, msg) {
   const e = document.getElementById("err_" + id);
   if (!e) return;
-  e.textContent = biText(msg);
+  e.dataset.msg = msg || "";
+  e.textContent = tx(msg || "");
   document.getElementById("wrap_" + id).classList.toggle("invalid", !!msg);
 }
- 
+
 function validate() {
   let first = null;
   QUESTIONS.forEach(q => {
@@ -580,7 +606,7 @@ function validate() {
   if (first) document.getElementById("wrap_" + first).scrollIntoView({ behavior: "smooth", block: "center" });
   return !first;
 }
- 
+
 /* =========================================================
    6. SUBMIT
    ========================================================= */
@@ -593,20 +619,20 @@ function buildPayload() {
   data.q34b_valid = a && validAadhaar(a) ? "Yes" : "No";
   return data;
 }
- 
+
 let currentSid = null;
- 
+
 async function onSubmit(e) {
   e.preventDefault();
   const status = document.getElementById("status");
   const btn = document.getElementById("submitBtn");
-  status.textContent = ""; status.className = "";
-  if (!validate()) { status.textContent = biText("Some answers need attention. They are marked in red above."); status.className = "bad"; return; }
- 
+  setStatus("");
+  if (!validate()) { setStatus("Some answers need attention. They are marked in red above.", "bad"); return; }
+
   btn.disabled = true;
   btn.innerHTML = bi("Submitting…");
-  status.textContent = biText("This can take up to 20 seconds. Please keep this page open.");
- 
+  setStatus("This can take up to 30 seconds. Please keep this page open.");
+
   // Reference ID made here so a retry is never saved twice
   if (!currentSid) {
     currentSid = "GYS-" + Date.now().toString(36).toUpperCase() + "-" +
@@ -614,12 +640,13 @@ async function onSubmit(e) {
   }
   const payload = buildPayload();
   payload.sid = currentSid;
+  payload.lang = LANG;
   const opts = {
     method: "POST",
     headers: { "Content-Type": "text/plain;charset=utf-8" },
     body: JSON.stringify(payload)
   };
- 
+
   try {
     let out;
     try {
@@ -638,19 +665,46 @@ async function onSubmit(e) {
     document.getElementById("bar").style.width = "100%";
     window.scrollTo({ top: 0, behavior: "smooth" });
   } catch (err) {
-    status.textContent = "Not submitted: " + err.message + ". " + biText("Check your internet connection and press Submit assessment again.");
-    status.className = "bad";
+    setStatus("Not submitted. Check your internet connection and press Submit assessment again.", "bad", "(" + err.message + ")");
     btn.disabled = false;
     btn.innerHTML = bi("Submit assessment");
   }
 }
- 
+
+function setStatus(key, cls, extra) {
+  const st = document.getElementById("status");
+  st.dataset.key = key || "";
+  st.dataset.extra = extra || "";
+  st.className = cls || "";
+  st.textContent = key ? tx(key) + (extra ? " " + extra : "") : "";
+}
+
+/* =========================================================
+   LANGUAGE SWITCH
+   ========================================================= */
+function setLang(lang) {
+  LANG = lang === "ta" ? "ta" : "en";
+  document.body.classList.toggle("lang-ta", LANG === "ta");
+  document.documentElement.lang = LANG;
+  document.title = LANG === "ta"
+    ? "கிராம யுவ சக்தி – தொழில்முனைவுத் தயார்நிலை மதிப்பீடு"
+    : "Gram Yuva Shakti – Enterprise Readiness Assessment";
+  document.querySelectorAll(".lang-switch button").forEach(b =>
+    b.setAttribute("aria-pressed", String(b.dataset.lang === LANG)));
+  document.querySelectorAll(".other").forEach(i => { i.placeholder = tx("Please specify"); });
+  document.querySelectorAll(".err").forEach(e => { e.textContent = tx(e.dataset.msg || ""); });
+  const st = document.getElementById("status");
+  if (st.dataset.key) st.textContent = tx(st.dataset.key) + (st.dataset.extra ? " " + st.dataset.extra : "");
+  updateProgress();
+  try { localStorage.setItem("gys_lang", LANG); } catch (ignore) {}
+}
+
 /* =========================================================
    7. INIT
    ========================================================= */
 render();
 const form = document.getElementById("form");
- 
+
 form.addEventListener("change", e => {
   const t = e.target;
   const name = t.name.replace(/_other$/, "");
@@ -675,7 +729,12 @@ form.addEventListener("change", e => {
 form.addEventListener("input", updateProgress);
 form.addEventListener("submit", onSubmit);
 document.getElementById("submitBtn").innerHTML = bi("Submit assessment");
-updateProgress();
+document.querySelectorAll(".lang-switch button").forEach(b =>
+  b.addEventListener("click", () => setLang(b.dataset.lang)));
+// Starting language: ?lang=ta in the link, else the last choice on this device
+let startLang = new URLSearchParams(location.search).get("lang");
+if (!startLang) { try { startLang = localStorage.getItem("gys_lang"); } catch (ignore) {} }
+setLang(startLang || "en");
 </script>
 </body>
 </html>
