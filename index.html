@@ -255,7 +255,7 @@ const FORM = [
     opts: ["Below ₹25,000", "₹25,000-₹1 lakh", "₹1-5 lakh", "More than ₹5 lakh"] },
   { id: "q34", n: "34", label: "Are you aware of bank loans and government schemes for enterprises?", type: "radio", opts: YN, req: true },
   { id: "q34a", n: "34a", label: "CKYC Number (if available)", hint: "14 digits", type: "text", attrs: 'maxlength="14" inputmode="numeric"' },
-  { id: "q34b", n: "34b", label: "Aadhaar Number", hint: "Only checked for validity; only the last 4 digits are stored.", type: "text", req: true,
+  { id: "q34b", n: "34b", label: "Aadhaar Number", hint: "12 digits", type: "text", req: true,
     attrs: 'maxlength="14" inputmode="numeric" autocomplete="off"' },
   { id: "q34c", n: "34c", label: "CIBIL Score (if known)", hint: "Between 300 and 900", type: "number", attrs: 'min="300" max="900" inputmode="numeric"' },
   { id: "q35", n: "35", label: "Have you ever availed a bank loan?", type: "radio", opts: YN, req: true },
@@ -448,9 +448,9 @@ function validate() {
 function buildPayload() {
   const data = { submitted_at: new Date().toISOString() };
   QUESTIONS.forEach(q => { data[q.id] = isVisible(q.id) ? val(q.id) : ""; });
-  // Never send the full Aadhaar number – send validity + last 4 digits only
+  // Full Aadhaar number (digits only) plus a validity flag
   const a = data.q34b.replace(/\s/g, "");
-  data.q34b = a ? "XXXX-XXXX-" + a.slice(-4) : "";
+  data.q34b = a;
   data.q34b_valid = a && validAadhaar(a) ? "Yes" : "No";
   return data;
 }
