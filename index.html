@@ -277,17 +277,36 @@ async function onSubmit(e) {
   if (SCRIPT_URL.indexOf("https://script.google.com/") !== 0) {
     status.textContent = "Form is not connected yet (SCRIPT_URL not set)."; return;
   }
+  if (!/^https:\/\/script\.google\.com\/macros\/s\/.+\/exec$/.test(SCRIPT_URL)) {
+    status.textContent = "Form is not connected correctly (SCRIPT_URL must end in /exec)."; return;
+  }
   btn.disabled = true;
   status.textContent = "Submitting… please wait.";
+
+  // A reference ID made here, so the response can be identified even if
+  // the browser cannot read Google's reply. The server ignores repeats.
+  const payload = buildPayload();
+  payload.sid = "GYS-" + Date.now().toString(36).toUpperCase() + "-" +
+                Math.random().toString(36).slice(2, 6).toUpperCase();
+  const opts = {
+    method: "POST",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify(payload)
+  };
+
   try {
-    // text/plain avoids a CORS preflight, which Apps Script does not support
-    const res = await fetch(SCRIPT_URL, {
-      method: "POST",
-      headers: { "Content-Type": "text/plain;charset=utf-8" },
-      body: JSON.stringify(buildPayload())
-    });
-    const out = await res.json().catch(() => ({}));
+    let out;
+    try {
+      const res = await fetch(SCRIPT_URL, opts);
+      out = await res.json().catch(() => ({}));
+    } catch (readErr) {
+      // Some browsers (e.g. Safari on iPhone) block reading Google's reply.
+      // Send again without reading the reply; the server skips duplicates.
+      await fetch(SCRIPT_URL, Object.assign({ mode: "no-cors" }, opts));
+      out = { status: "success", responseId: payload.sid };
+    }
     if (out.status && out.status !== "success") throw new Error(out.message || "Server error");
+    if (!out.responseId) out.responseId = payload.sid;
     document.getElementById("form").style.display = "none";
     document.getElementById("thanks").style.display = "block";
     if (out.responseId) document.getElementById("respId").textContent = "Response ID: " + out.responseId;
